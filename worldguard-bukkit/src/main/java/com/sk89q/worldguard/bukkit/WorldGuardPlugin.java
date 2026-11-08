@@ -117,6 +117,11 @@ public class WorldGuardPlugin extends JavaPlugin {
 
     private static final int BSTATS_PLUGIN_ID = 3283;
 
+    @Override public void onLoad() {
+        try { LegacyPluginData.migrate(getDataFolder().toPath(), "WorldGuard"); }
+        catch (IOException failure) { throw new IllegalStateException("기존 WorldGuard 보호 영역·설정 데이터 이전 실패", failure); }
+    }
+
     /**
      * Construct objects. Actual loading occurs when the plugin is enabled, so
      * this merely instantiates the objects.

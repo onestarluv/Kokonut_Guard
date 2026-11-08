@@ -1,8 +1,13 @@
-name: WorldGuard
+name: Kokonut_Guard
+author: pingpong
+description: 에고버스 플러그인
+website: https://wiki.egoverse.kr
+provides: [WorldGuard]
 main: com.sk89q.worldguard.bukkit.WorldGuardPlugin
-version: "${internalVersion}"
+version: "${pluginVersion}"
 depend: [WorldEdit]
 api-version: "26.3"
+load: POSTWORLD
 folia-supported: true
 commands:
   영역:

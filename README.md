@@ -1,3 +1,9 @@
+# Kokonut_Guard
+
+플러그인 ID는 `Kokonut_Guard`, 배포 JAR는 `Kokonut_Guard-<version>.jar`입니다. 작성자·설명·사이트는 Core와 같은 `pingpong`·`에고버스 플러그인`·`https://wiki.egoverse.kr`로 통일했습니다. `provides: [WorldGuard]`로 기존 의존성과 플러그인 조회 이름을 지원하며 WorldGuard API 패키지·권한은 유지합니다.
+
+첫 로드 시 `plugins/WorldGuard`의 영역·설정을 `plugins/Kokonut_Guard`로 이전합니다. 양쪽 폴더가 모두 자료를 포함하면 덮어쓰지 않고 로드를 실패시킵니다. 교체 시 기존 `worldguard-bukkit-*-dist.jar`와 새 JAR를 함께 설치하지 마세요. 소스·라이선스는 아래 원본 설명을 따릅니다.
+
 <h1>
     <img src="worldguard-logo.svg" alt="WorldGuard" width="400" /> 
 </h1>

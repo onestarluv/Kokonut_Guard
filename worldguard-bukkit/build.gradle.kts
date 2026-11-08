@@ -1,4 +1,3 @@
-import buildlogic.internalVersion
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
@@ -26,14 +25,15 @@ dependencies {
 }
 
 tasks.named<Copy>("processResources") {
-    val internalVersion = project.internalVersion
-    inputs.property("internalVersion", internalVersion)
+    val pluginVersion = "cbt-1.0"
+    inputs.property("pluginVersion", pluginVersion)
     filesMatching("plugin.yml") {
-        expand("internalVersion" to internalVersion.get())
+        expand("pluginVersion" to pluginVersion)
     }
 }
 
 tasks.named<ShadowJar>("shadowJar") {
+    archiveFileName.set("Kokonut_Guard-cbt-1.0.jar")
     dependencies {
         include(dependency(":worldguard-core"))
         include(dependency("org.bstats:bstats-bukkit"))
