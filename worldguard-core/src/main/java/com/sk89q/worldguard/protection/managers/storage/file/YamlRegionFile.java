@@ -122,7 +122,7 @@ public class YamlRegionFile implements RegionDatabase {
         } catch (FileNotFoundException | NoSuchFileException e) {
             return new HashSet<>(loaded.values());
         } catch (IOException | ParserException e) {
-            throw new StorageException("Failed to load region data from '" + file + "'", e);
+            throw new StorageException("영역 데이터를 불러오지 못한 파일: '" + file + "'", e);
         }
 
         Map<String, YAMLNode> regionData = config.getNodes("regions");
@@ -142,8 +142,8 @@ public class YamlRegionFile implements RegionDatabase {
 
             try {
                 if (type == null) {
-                    log.warning("Undefined region type for region '" + id + "'!\n" +
-                            "Here is what the region data looks like:\n\n" + toYamlOutput(entry.getValue().getMap()) + "\n");
+                    log.warning("영역 종류가 지정되지 않았습니다: '" + id + "'!\n" +
+                            "영역 데이터 내용:\n\n" + toYamlOutput(entry.getValue().getMap()) + "\n");
                     continue;
                 } else if (type.equals("cuboid")) {
                     Vector3 pt1 = checkNotNull(node.getVector("min"));
@@ -159,8 +159,8 @@ public class YamlRegionFile implements RegionDatabase {
                 } else if (type.equals("global")) {
                     region = new GlobalProtectedRegion(id);
                 } else {
-                    log.warning("Unknown region type for region '" + id + "'!\n" +
-                            "Here is what the region data looks like:\n\n" + toYamlOutput(entry.getValue().getMap()) + "\n");
+                    log.warning("알 수 없는 영역 종류: '" + id + "'!\n" +
+                            "영역 데이터 내용:\n\n" + toYamlOutput(entry.getValue().getMap()) + "\n");
                     continue;
                 }
 
@@ -178,9 +178,9 @@ public class YamlRegionFile implements RegionDatabase {
                 }
             } catch (NullPointerException e) {
                 log.log(Level.WARNING,
-                        "Unexpected NullPointerException encountered during parsing for the region '" + id + "'!\n" +
-                                "Here is what the region data looks like:\n\n" + toYamlOutput(entry.getValue().getMap()) +
-                                "\n\nNote: This region will disappear as a result!", e);
+                        "영역 해석 중 예기치 않은 NullPointerException 발생: '" + id + "'!\n" +
+                                "영역 데이터 내용:\n\n" + toYamlOutput(entry.getValue().getMap()) +
+                                "\n\n주의: 이 영역은 결과적으로 사라집니다!", e);
             }
         }
 
@@ -251,14 +251,14 @@ public class YamlRegionFile implements RegionDatabase {
             //noinspection ResultOfMethodCallIgnored
             file.delete();
             if (!tempFile.renameTo(file)) {
-                throw new StorageException("Failed to rename temporary regions file to " + file.getAbsolutePath());
+                throw new StorageException("임시 영역 파일 이름을 변경하지 못했습니다: " + file.getAbsolutePath());
             }
         }
     }
 
     @Override
     public void saveChanges(RegionDifference difference) throws DifferenceSaveException {
-        throw new DifferenceSaveException("Not supported");
+        throw new DifferenceSaveException("지원하지 않습니다");
     }
 
     private DefaultDomain parseDomain(YAMLNode node) {
@@ -278,7 +278,7 @@ public class YamlRegionFile implements RegionDatabase {
             try {
                 domain.addPlayer(UUID.fromString(stringId));
             } catch (IllegalArgumentException e) {
-                log.log(Level.WARNING, "Failed to parse UUID '" + stringId + "'", e);
+                log.log(Level.WARNING, "UUID를 해석하지 못했습니다: '" + stringId + "'", e);
             }
         }
 
@@ -333,7 +333,7 @@ public class YamlRegionFile implements RegionDatabase {
      */
     private YAMLProcessor createYamlProcessor(File file) {
         checkNotNull(file);
-        return new YAMLProcessor(file.toPath(), false, YAMLFormat.COMPACT);
+        return new YAMLProcessor(file, false, YAMLFormat.COMPACT);
     }
 
     /**
@@ -346,7 +346,7 @@ public class YamlRegionFile implements RegionDatabase {
         try {
             return ERROR_DUMP_YAML.dump(object).replaceAll("(?m)^", "\t");
         } catch (Throwable t) {
-            return "<error while dumping object>";
+            return "<객체 출력 중 오류>";
         }
     }
 

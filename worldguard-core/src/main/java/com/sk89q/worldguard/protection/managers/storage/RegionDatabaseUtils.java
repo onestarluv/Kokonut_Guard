@@ -58,10 +58,10 @@ public final class RegionDatabaseUtils {
                 try {
                     target.setParent(parent);
                 } catch (CircularInheritanceException e) {
-                    log.warning("Circular inheritance detected! Can't set the parent of '" + target + "' to parent '" + parent.getId() + "'");
+                    log.warning("순환 상속이 감지되었습니다! 부모를 설정할 수 없는 영역: '" + target + "' 지정한 부모: '" + parent.getId() + "'");
                 }
             } else {
-                log.warning("Unknown region parent: " + entry.getValue());
+                log.warning("알 수 없는 부모 영역: " + entry.getValue());
             }
         }
     }

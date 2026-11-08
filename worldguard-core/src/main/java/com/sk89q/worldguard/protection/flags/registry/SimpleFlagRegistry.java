@@ -57,7 +57,7 @@ public class SimpleFlagRegistry implements FlagRegistry {
     public void register(Flag<?> flag) throws FlagConflictException {
         synchronized (lock) {
             if (initialized) {
-                throw new IllegalStateException("New flags cannot be registered at this time");
+                throw new IllegalStateException("지금은 새 플래그를 등록할 수 없습니다");
             }
 
             forceRegister(flag);
@@ -84,7 +84,7 @@ public class SimpleFlagRegistry implements FlagRegistry {
         synchronized (lock) {
             String name = flag.getName().toLowerCase();
             if (flags.containsKey(name)) {
-                throw new FlagConflictException("A flag already exists by the name " + name);
+                throw new FlagConflictException("이미 존재하는 플래그 이름: " + name);
             }
 
             flags.put(name, flag);
@@ -142,10 +142,10 @@ public class SimpleFlagRegistry implements FlagRegistry {
                     if (unmarshalled != null) {
                         values.put(flag, unmarshalled);
                     } else {
-                        log.warning("Failed to parse flag '" + flag.getName() + "' with value '" + entry.getValue() + "'");
+                        log.warning("해석하지 못한 플래그: '" + flag.getName() + "' 값: '" + entry.getValue() + "'");
                     }
                 } catch (Throwable e) {
-                    log.log(Level.WARNING, "Failed to unmarshal flag value for " + flag, e);
+                    log.log(Level.WARNING, "플래그 값을 역직렬화하지 못했습니다: " + flag, e);
                 }
             }
         }

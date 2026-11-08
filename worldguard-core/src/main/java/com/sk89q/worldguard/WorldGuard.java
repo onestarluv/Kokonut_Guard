@@ -82,7 +82,7 @@ public final class WorldGuard {
         try {
             profileCache = new SQLiteCache(new File(cacheDir, "profiles.sqlite"));
         } catch (IOException | UnsatisfiedLinkError ignored) {
-            logger.log(Level.WARNING, "Failed to initialize SQLite profile cache. Cache is memory-only.");
+            logger.log(Level.WARNING, "SQLite 프로필 캐시를 초기화하지 못했습니다. 메모리 캐시만 사용합니다.");
             profileCache = new HashMapCache();
         }
 
@@ -98,7 +98,7 @@ public final class WorldGuard {
      * @return The platform
      */
     public WorldGuardPlatform getPlatform() {
-        checkNotNull(platform, "WorldGuard is not enabled, unable to access the platform.");
+        checkNotNull(platform, "WorldGuard가 활성화되지 않아 플랫폼에 접근할 수 없습니다.");
         return platform;
     }
 
@@ -173,7 +173,7 @@ public final class WorldGuard {
         if (sender instanceof LocalPlayer) {
             return (LocalPlayer) sender;
         } else {
-            throw new CommandException("A player is expected.");
+            throw new CommandException("플레이어만 사용할 수 있습니다.");
         }
     }
 
@@ -184,11 +184,11 @@ public final class WorldGuard {
         executorService.shutdown();
 
         try {
-            logger.log(Level.INFO, "Shutting down executor and cancelling any pending tasks...");
+            logger.log(Level.INFO, "실행기를 종료하고 대기 중인 작업을 취소합니다...");
 
             List<Task<?>> tasks = supervisor.getTasks();
             if (!tasks.isEmpty()) {
-                StringBuilder builder = new StringBuilder("Known tasks:");
+                StringBuilder builder = new StringBuilder("확인된 작업:");
                 for (Task<?> task : tasks) {
                     builder.append("\n");
                     builder.append(task.getName());

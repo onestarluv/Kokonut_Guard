@@ -97,7 +97,7 @@ class RegionCommandsBase {
                     World override = WorldEdit.getInstance().getSessionManager().get(sender).getWorldOverride();
                     if (override != null) {
                         if (sender instanceof LocalPlayer && !override.equals(((LocalPlayer) sender).getWorld())) {
-                            sender.printDebug(TextComponent.of("Using //world override for region command: " + override.getName()));
+                            sender.printDebug(TextComponent.of("영역 명령어에 //world의 월드 지정 적용: " + override.getName()));
                         }
                         return override;
                     }
@@ -107,7 +107,7 @@ class RegionCommandsBase {
             if (sender instanceof LocalPlayer) {
                 return ((LocalPlayer) sender).getWorld();
             } else {
-                throw new CommandException("Please specify " + "the world with -" + flag + " world_name.");
+                throw new CommandException("지정하세요: " + "월드 옵션 -" + flag + " 월드이름.");
             }
         }
     }
@@ -123,12 +123,12 @@ class RegionCommandsBase {
     protected static String checkRegionId(String id, boolean allowGlobal) throws CommandException {
         if (!ProtectedRegion.isValidId(id)) {
             throw new CommandException(
-                    "The region name of '" + id + "' contains characters that are not allowed.");
+                    "영역 이름 '" + id + "'에 허용되지 않는 문자가 있습니다.");
         }
 
         if (!allowGlobal && id.equalsIgnoreCase("__global__")) { // Sorry, no global
             throw new CommandException(
-                    "Sorry, you can't use __global__ here.");
+                    "여기에서는 __global__을 사용할 수 없습니다.");
         }
 
         return id;
@@ -161,7 +161,7 @@ class RegionCommandsBase {
             }
 
             throw new CommandException(
-                    "No region could be found with the name of '" + id + "'.");
+                    "다음 이름의 영역을 찾을 수 없습니다: '" + id + "'.");
         }
 
         return region;
@@ -208,13 +208,13 @@ class RegionCommandsBase {
         if (set.size() == 0) {
             if (allowGlobal) {
                 ProtectedRegion global = checkExistingRegion(regionManager, "__global__", true);
-                player.printDebug("You're not standing in any " +
-                        "regions. Using the global region for this world instead.");
+                player.printDebug("현재 서 있는 위치에 " +
+                        "영역이 없습니다. 이 월드의 전역 영역을 사용합니다.");
                 return global;
             }
             throw new CommandException(
-                    "You're not standing in a region. " +
-                            "Specify an ID if you want to select a specific region.");
+                    "영역 안에 서 있지 않습니다. " +
+                            "특정 영역을 선택하려면 이름을 지정하세요.");
         } else if (set.size() > 1) {
             boolean first = true;
             Set<ProtectedRegion> filteredRegions = set.getRegions().stream().filter(permissionPredicate).collect(Collectors.toSet());
@@ -222,7 +222,7 @@ class RegionCommandsBase {
 
             final TextComponent.Builder builder = TextComponent.builder("");
             if (!filteredRegions.isEmpty()) {
-                builder.append(TextComponent.of("Current regions: ", TextColor.GOLD));
+                builder.append(TextComponent.of("현재 영역: ", TextColor.GOLD));
                 for (ProtectedRegion region : filteredRegions) {
                     if (!first) {
                         builder.append(TextComponent.of(", "));
@@ -230,20 +230,20 @@ class RegionCommandsBase {
                     first = false;
                     TextComponent regionComp = TextComponent.of(region.getId(), TextColor.AQUA);
                     if (rgCmd != null && rgCmd.contains("%id%")) {
-                        regionComp = regionComp.hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to pick this region")))
+                        regionComp = regionComp.hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("클릭하여 이 영역 선택")))
                                 .clickEvent(ClickEvent.of(ClickEvent.Action.RUN_COMMAND, rgCmd.replace("%id%", region.getId())));
                     }
                     builder.append(regionComp);
                 }
                 if (hiddenRegions > 0) {
-                    builder.append(TextComponent.of(", and " + hiddenRegions + " hidden regions", TextColor.GRAY));
+                    builder.append(TextComponent.of(", 및 " + hiddenRegions + "개의 숨겨진 영역", TextColor.GRAY));
                 }
             } else {
-                builder.append(TextComponent.of("Current regions: ", TextColor.GOLD));
-                builder.append(TextComponent.of(hiddenRegions + " hidden regions", TextColor.GRAY));
+                builder.append(TextComponent.of("현재 영역: ", TextColor.GOLD));
+                builder.append(TextComponent.of(hiddenRegions + "개의 숨겨진 영역", TextColor.GRAY));
             }
             player.print(builder.build());
-            throw new CommandException("You're standing in several regions (please pick one).");
+            throw new CommandException("여러 영역에 걸쳐 서 있습니다. 하나를 선택하세요.");
         }
 
         return set.iterator().next();
@@ -265,9 +265,9 @@ class RegionCommandsBase {
             }
             return localSession.getRegionSelector(localSession.getSelectionWorld()).getRegion();
         } catch (IncompleteRegionException e) {
-            throw new CommandException("Please select an area first. " +
-                    "Use WorldEdit to make a selection! " +
-                    "(see: https://worldedit.enginehub.org/en/latest/usage/regions/selections/).");
+            throw new CommandException("먼저 범위를 선택하세요. " +
+                    "WorldEdit으로 범위를 선택하세요! " +
+                    "(범위 선택 도움말: https://worldedit.enginehub.org/en/latest/usage/regions/selections/).");
         }
     }
 
@@ -280,8 +280,8 @@ class RegionCommandsBase {
      */
     protected static void checkRegionDoesNotExist(RegionManager manager, String id, boolean mayRedefine) throws CommandException {
         if (manager.hasRegion(id)) {
-            throw new CommandException("A region with that name already exists. Please choose another name." +
-                    (mayRedefine ? " To change the shape, use /region redefine " + id + "." : ""));
+            throw new CommandException("같은 이름의 영역이 있습니다. 다른 이름을 사용하세요." +
+                    (mayRedefine ? " 모양을 변경하려면 /영역 재설정 사용: " + id + "." : ""));
         }
     }
 
@@ -293,15 +293,15 @@ class RegionCommandsBase {
      */
     protected static RegionManager checkRegionManager(World world) throws CommandException {
         if (!WorldGuard.getInstance().getPlatform().getGlobalStateManager().get(world).useRegions) {
-            throw new CommandException("Region support is disabled in the target world. " +
-                    "It can be enabled per-world in WorldGuard's configuration files. " +
-                    "However, you may need to restart your server afterwards.");
+            throw new CommandException("대상 월드의 영역 보호가 비활성화되어 있습니다. " +
+                    "WorldGuard 설정 파일에서 월드별로 활성화할 수 있습니다. " +
+                    "변경 후 서버 재시작이 필요할 수 있습니다.");
         }
 
         RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(world);
         if (manager == null) {
-            throw new CommandException("Region data failed to load for this world. " +
-                    "Please ask a server administrator to read the logs to identify the reason.");
+            throw new CommandException("이 월드의 영역 데이터를 불러오지 못했습니다. " +
+                    "관리자에게 로그에서 원인을 확인하도록 요청하세요.");
         }
         return manager;
     }
@@ -328,7 +328,7 @@ class RegionCommandsBase {
             BlockVector3 max = selection.getMaximumPoint();
             return new ProtectedCuboidRegion(id, min, max);
         } else {
-            throw new CommandException("Sorry, you can only use cuboids and polygons for WorldGuard regions.");
+            throw new CommandException("WorldGuard 영역은 직육면체와 다각형만 지원합니다.");
         }
     }
 
@@ -345,8 +345,8 @@ class RegionCommandsBase {
             String failingList = Joiner.on(", ").join(failures.stream()
                     .map(regionManager -> "'" + regionManager.getName() + "'").collect(Collectors.toList()));
 
-            sender.print(TextComponent.of("(Warning: The background saving of region data is failing for these worlds: " + failingList + ". " +
-                    "Your changes are getting lost. See the server log for more information.)", TextColor.GOLD));
+            sender.print(TextComponent.of("(경고: 다음 월드의 영역 자동 저장 실패: " + failingList + ". " +
+                    "변경 내용이 유실될 수 있습니다. 서버 로그를 확인하세요.)", TextColor.GOLD));
         }
     }
 
@@ -362,7 +362,7 @@ class RegionCommandsBase {
         }
         int height = region.getMaximumPoint().y() - region.getMinimumPoint().y();
         if (height <= 2) {
-            sender.printDebug("(Warning: The height of the region was " + (height + 1) + " block(s).)");
+            sender.printDebug("(경고: 영역 높이 변경 전 값: " + (height + 1) + "블록.)");
         }
     }
 
@@ -375,7 +375,7 @@ class RegionCommandsBase {
      */
     protected static void informNewUser(Actor sender, RegionManager manager, ProtectedRegion region) {
         if (manager.size() <= 2) {
-            sender.print(SubtleFormat.wrap("(This region is NOW PROTECTED from modification from others. Don't want that? Use ")
+            sender.print(SubtleFormat.wrap("(다른 사용자의 변경으로부터 이 영역을 보호합니다. 해제하려면: ")
                             .append(TextComponent.of("/rg flag " + region.getId() + " passthrough allow", TextColor.AQUA))
                             .append(TextComponent.of(")", TextColor.GRAY)));
         }
@@ -392,9 +392,9 @@ class RegionCommandsBase {
         ProtectedRegion spawn = WorldGuard.getInstance().getPlatform().getSpawnProtection(world);
         if (spawn != null) {
             if (!spawn.getIntersectingRegions(ImmutableList.of(region)).isEmpty()) {
-                sender.print(ErrorFormat.wrap("Warning!")
-                        .append(TextComponent.of(" This region overlaps vanilla's spawn protection. WorldGuard cannot " +
-                                "override this, and only server operators will be able to interact with this area.", TextColor.WHITE)));
+                sender.print(ErrorFormat.wrap("경고!")
+                        .append(TextComponent.of(" 이 영역은 기본 스폰 보호 범위와 겹칩니다. WorldGuard는 " +
+                                "이를 덮어쓸 수 없으며 서버 운영자만 이 범위에서 상호작용할 수 있습니다.", TextColor.WHITE)));
                 return true;
             }
         }
@@ -416,10 +416,10 @@ class RegionCommandsBase {
             selector.setWorld(world);
             session.setRegionSelector(world, selector);
             selector.explainRegionAdjust(actor, session);
-            actor.print("Region selected as " + region.getType().getName());
+            actor.print("선택한 영역: " + region.getType().getName());
         } else {
-            throw new CommandException("Can't select that region! " +
-                    "The region type '" + region.getType().getName() + "' can't be selected.");
+            throw new CommandException("영역을 선택할 수 없습니다! " +
+                    "영역 종류 '" + region.getType().getName() + "'은(는) 선택할 수 없습니다.");
         }
     }
 

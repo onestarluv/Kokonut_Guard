@@ -28,7 +28,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class RegionReport extends DataReport {
 
     public RegionReport(ProtectedRegion region) {
-        super("Region: " + region.getId());
+        super("영역: " + region.getId());
 
         append("Type", region.getType());
         append("Priority", region.getPriority());

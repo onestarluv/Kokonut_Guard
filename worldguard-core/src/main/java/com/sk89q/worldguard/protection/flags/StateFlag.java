@@ -81,14 +81,14 @@ public class StateFlag extends Flag<StateFlag.State> {
     public State parseInput(FlagContext context) throws InvalidFlagFormat {
         String input = context.getUserInput();
 
-        if (input.equalsIgnoreCase("allow")) {
+        if (input.equalsIgnoreCase("allow") || input.equals("허용")) {
             return State.ALLOW;
-        } else if (input.equalsIgnoreCase("deny")) {
+        } else if (input.equalsIgnoreCase("deny") || input.equals("거부") || input.equals("차단")) {
             return State.DENY;
-        } else if (input.equalsIgnoreCase("none")) {
+        } else if (input.equalsIgnoreCase("none") || input.equals("미설정") || input.equals("해제")) {
             return null;
         } else {
-            throw new InvalidFlagFormat("Expected none/allow/deny but got '" + input + "'");
+            throw new InvalidFlagFormat("미설정/허용/거부 값이 필요합니다. 입력값: '" + input + "'");
         }
     }
 

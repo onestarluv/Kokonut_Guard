@@ -117,7 +117,7 @@ public class RegionContainerImpl {
                     failingLoads.remove(normal);
                     return manager;
                 } catch (StorageException e) {
-                    log.log(Level.WARNING, "Failed to load the region data for '" + name + "' (periodic attempts will be made to load the data until success)", e);
+                    log.log(Level.WARNING, "영역 데이터를 불러오지 못한 월드: '" + name + "' (성공할 때까지 주기적으로 다시 시도합니다)", e);
                     failingLoads.add(normal);
                     return null;
                 }
@@ -158,7 +158,7 @@ public class RegionContainerImpl {
                 try {
                     manager.save();
                 } catch (StorageException e) {
-                    log.log(Level.WARNING, "Failed to save the region data for '" + name + "'", e);
+                    log.log(Level.WARNING, "영역 데이터를 저장하지 못한 월드: '" + name + "'", e);
                 }
 
                 mapping.remove(normal);
@@ -181,7 +181,7 @@ public class RegionContainerImpl {
                 try {
                     manager.saveChanges();
                 } catch (StorageException e) {
-                    log.log(Level.WARNING, "Failed to save the region data for '" + name + "' while unloading the data for all worlds", e);
+                    log.log(Level.WARNING, "영역 데이터를 저장하지 못한 월드: '" + name + "' 모든 월드 데이터 해제 중", e);
                 }
             }
 
@@ -243,15 +243,15 @@ public class RegionContainerImpl {
                     RegionManager manager = entry.getValue();
                     try {
                         if (manager.saveChanges()) {
-                            log.info("Region data changes made in '" + name + "' have been background saved");
+                            log.info("영역 변경 데이터: '" + name + "' 자동 저장 완료");
                         }
                         failingSaves.remove(manager);
                     } catch (StorageException e) {
                         failingSaves.add(manager);
-                        log.log(Level.WARNING, "Failed to save the region data for '" + name + "' during a periodical save", e);
+                        log.log(Level.WARNING, "영역 데이터를 저장하지 못한 월드: '" + name + "' 주기적 저장 중", e);
                     } catch (Exception e) {
                         failingSaves.add(manager);
-                        log.log(Level.WARNING, "An expected error occurred during a periodical save", e);
+                        log.log(Level.WARNING, "주기적 저장 중 오류가 발생했습니다", e);
                     }
                 }
             }
@@ -269,7 +269,7 @@ public class RegionContainerImpl {
         public void run() {
             synchronized (lock) {
                 if (!failingLoads.isEmpty()) {
-                    log.info("Attempting to load region data that has previously failed to load...");
+                    log.info("이전에 실패한 영역 데이터 불러오기를 다시 시도합니다...");
 
                     Iterator<Normal> it = failingLoads.iterator();
                     while (it.hasNext()) {
@@ -278,14 +278,14 @@ public class RegionContainerImpl {
                             RegionManager manager = createAndLoad(normal.toString());
                             mapping.put(normal, manager);
                             it.remove();
-                            log.info("Successfully loaded region data for '" + normal.toString() + "'");
+                            log.info("영역 데이터 불러오기 성공: '" + normal.toString() + "'");
                         } catch (StorageException e) {
                             if (e.getCause() != null && e.getCause().getMessage().equals(lastMsg)) {
                                 // if it's the same error, don't print a whole stacktrace
-                                log.log(Level.WARNING, "Region data is still failing to load, at least for the world named '" + normal.toString() + "'");
+                                log.log(Level.WARNING, "영역 데이터 불러오기가 계속 실패하는 월드: '" + normal.toString() + "'");
                                 break;
                             }
-                            log.log(Level.WARNING, "Region data is still failing to load, at least for the world named '" + normal.toString() + "'", e);
+                            log.log(Level.WARNING, "영역 데이터 불러오기가 계속 실패하는 월드: '" + normal.toString() + "'", e);
                             lastMsg = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
                             break;
                         }

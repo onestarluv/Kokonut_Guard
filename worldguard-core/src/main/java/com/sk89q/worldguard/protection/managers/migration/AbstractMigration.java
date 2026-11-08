@@ -56,13 +56,13 @@ abstract class AbstractMigration implements Migration {
                 try {
                     migrate(store);
                 } catch (MigrationException e) {
-                    log.log(Level.WARNING, "Migration of one world (" + store.getName() + ") failed with an error", e);
+                    log.log(Level.WARNING, "월드 이전 중 (" + store.getName() + ") 오류가 발생했습니다", e);
                 }
             }
 
             postMigration();
         } catch (StorageException e) {
-            throw new MigrationException("Migration failed because the process of getting a list of all the worlds to migrate failed", e);
+            throw new MigrationException("이전할 월드 목록을 조회하지 못해 이전에 실패했습니다", e);
         }
     }
 

@@ -56,7 +56,7 @@ public abstract class Flag<T> {
      */
     protected Flag(String name, @Nullable RegionGroup defaultGroup) {
         if (name != null && !isValidName(name)) {
-            throw new IllegalArgumentException("Invalid flag name used");
+            throw new IllegalArgumentException("유효하지 않은 플래그 이름입니다");
         }
         this.name = name;
         this.regionGroup = defaultGroup != null ? new RegionGroupFlag(name + "-group", defaultGroup) : null;

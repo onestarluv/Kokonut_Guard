@@ -84,7 +84,7 @@ class FlagHelperBox extends PaginationBox {
     private boolean monoSpace;
 
     FlagHelperBox(World world, ProtectedRegion region, RegionPermissionModel perms) {
-        super("Flags for " + region.getId(), "/rg flags -w \"" + world.getName() + "\" -p %page% " + region.getId());
+        super("플래그: " + region.getId(), "/rg flags -w \"" + world.getName() + "\" -p %page% " + region.getId());
         this.world = world;
         this.region = region;
         this.perms = perms;
@@ -93,7 +93,7 @@ class FlagHelperBox extends PaginationBox {
     @Override
     public Component getComponent(int number) {
         if (number == Flags.INBUILT_FLAGS.size()) {
-            return centerAndBorder(TextComponent.of("Third-Party Flags", TextColor.AQUA));
+            return centerAndBorder(TextComponent.of("외부 플러그인 플래그", TextColor.AQUA));
         } else if (number > Flags.INBUILT_FLAGS.size()) {
             number -= 1;
         }
@@ -121,13 +121,13 @@ class FlagHelperBox extends PaginationBox {
         if (flag.usesMembershipAsDefault()) {
             builder.append(TextComponent.empty().append(TextComponent.of("*", TextColor.AQUA))
                     .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.of("This is a special flag which defaults to allow for members, and deny for non-members"))));
+                            TextComponent.of("멤버에게 허용하고 비멤버에게 거부하는 특수 플래그입니다"))));
             length += monoSpace ? 1 : FlagFontInfo.getPxLength('*');
         }
         if (flag == Flags.PASSTHROUGH) {
             builder.append(TextComponent.empty().append(TextComponent.of("*", TextColor.AQUA))
                     .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.of("This is a special flag which overrides build checks. (Not movement related!)"))));
+                            TextComponent.of("건축 판정을 덮어쓰는 특수 플래그입니다. 이동과는 관계없습니다!"))));
             length += monoSpace ? 1 : FlagFontInfo.getPxLength('*');
         }
         int leftover = (monoSpace ? PAD_PX_SIZE / 3 : PAD_PX_SIZE) - length;
@@ -199,15 +199,15 @@ class FlagHelperBox extends PaginationBox {
             List<Component> hoverTexts = new ArrayList<>();
             if (maySet) {
                 if (isExplicitSet) {
-                    hoverTexts.add(TextComponent.of("Click to unset", TextColor.GOLD));
+                    hoverTexts.add(TextComponent.of("클릭하여 설정 해제", TextColor.GOLD));
                 } else if (DANGER_ZONE.contains(flag) && !(ProtectedRegion.GLOBAL_REGION.equals(region.getId()) && flag == Flags.PASSTHROUGH)) {
-                    hoverTexts.add(TextComponent.of("Setting this flag may have unintended consequences.", TextColor.RED)
+                    hoverTexts.add(TextComponent.of("이 플래그는 예상하지 못한 영향을 줄 수 있습니다.", TextColor.RED)
                             .append(TextComponent.newline())
-                            .append(TextComponent.of("Please read the documentation and set this flag manually if you really intend to.")
+                            .append(TextComponent.of("설명서를 확인한 뒤 필요한 경우 직접 설정하세요.")
                             .append(TextComponent.newline())
-                            .append(TextComponent.of("(Hint: You do not need to set this to protect the region!)"))));
+                            .append(TextComponent.of("(영역 보호를 위해 이 플래그를 설정할 필요는 없습니다!)"))));
                 } else {
-                    hoverTexts.add(TextComponent.of("Click to set", TextColor.GOLD));
+                    hoverTexts.add(TextComponent.of("클릭하여 설정", TextColor.GOLD));
                 }
             }
             Component valType = getToolTipHint(defVal, choice, inherited);
@@ -238,7 +238,7 @@ class FlagHelperBox extends PaginationBox {
         if (suggestChoice != null && perms.maySetFlag(region, flag)) {
             builder.append(TextComponent.of(suggestChoice, TextColor.DARK_GRAY)
                     .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.of("Click to set custom value", TextColor.GOLD)))
+                            TextComponent.of("클릭하여 사용자 지정값 설정", TextColor.GOLD)))
                     .clickEvent(ClickEvent.of(ClickEvent.Action.SUGGEST_COMMAND, makeCommand(flag, ""))));
         }
     }
@@ -266,9 +266,9 @@ class FlagHelperBox extends PaginationBox {
         List<Component> hoverTexts = new ArrayList<>();
         if (maySet) {
             if (isExplicitSet) {
-                hoverTexts.add(TextComponent.of("Click to change", TextColor.GOLD));
+                hoverTexts.add(TextComponent.of("클릭하여 변경", TextColor.GOLD));
             } else {
-                hoverTexts.add(TextComponent.of("Click to set", TextColor.GOLD));
+                hoverTexts.add(TextComponent.of("클릭하여 설정", TextColor.GOLD));
             }
         }
         Component valType = getToolTipHint(defVal, currVal, inherited);
@@ -319,19 +319,19 @@ class FlagHelperBox extends PaginationBox {
         Component valType;
         if (inherited) {
             if (currVal == defVal) {
-                valType = TextComponent.of("Inherited & ")
+                valType = TextComponent.of("상속 및 ")
                         .append(TextComponent.of("default")
                                 .decoration(TextDecoration.UNDERLINED, true))
-                        .append(TextComponent.of(" value"));
+                        .append(TextComponent.of(" 값"));
             } else {
-                valType = TextComponent.of("Inherited value");
+                valType = TextComponent.of("상속된 값");
             }
         } else {
             if (currVal == defVal) {
                 valType = TextComponent.empty()
-                        .append(TextComponent.of("Default")
+                        .append(TextComponent.of("기본값")
                                 .decoration(TextDecoration.UNDERLINED, true))
-                        .append(TextComponent.of(" value"));
+                        .append(TextComponent.of(" 값"));
             } else {
                 valType = null;
             }
@@ -355,7 +355,7 @@ class FlagHelperBox extends PaginationBox {
         String subName;
         subName = clazz.isAssignableFrom(RegistryFlag.class)
                 ? ((RegistryFlag<?>) subType).getRegistry().getName()
-                : subType.getClass().getSimpleName().replace("Flag", "");
+                : subType.getClass().getSimpleName().replace("플래그", "");
         Set<V> currVal = region.getFlag(flag);
         if (currVal == null) {
             currVal = getInheritedValue(region, flag);
@@ -365,7 +365,7 @@ class FlagHelperBox extends PaginationBox {
                 : currVal.stream().map(String::valueOf).collect(Collectors.joining(","));
         TextComponent hoverComp = TextComponent.of("");
         if (currVal != null) {
-            hoverComp = hoverComp.append(TextComponent.of("Current values:"))
+            hoverComp = hoverComp.append(TextComponent.of("현재 값:"))
                     .append(TextComponent.newline()).append(TextComponent.of(stringValue));
         }
         appendValueText(builder, flag, display, hoverComp);
@@ -390,13 +390,13 @@ class FlagHelperBox extends PaginationBox {
         if (currVal == null) {
             final Location defVal = flag.getDefault();
             if (defVal == null) {
-                appendValueText(builder, flag, "unset location", null);
+                appendValueText(builder, flag, "미설정 위치", null);
             } else {
-                appendValueText(builder, flag, defVal.toString(), TextComponent.of("Default value:")
+                appendValueText(builder, flag, defVal.toString(), TextComponent.of("기본값:")
                         .append(TextComponent.newline()).append(TextComponent.of(defVal.toString())));
             }
         } else {
-            appendValueText(builder, flag, currVal.toString(), TextComponent.of("Current value:")
+            appendValueText(builder, flag, currVal.toString(), TextComponent.of("현재 값:")
                     .append(TextComponent.newline()).append(TextComponent.of(currVal.toString())));
         }
     }
@@ -419,7 +419,7 @@ class FlagHelperBox extends PaginationBox {
             choices.addAll(Arrays.asList(suggested));
         }
         //noinspection unchecked
-        appendValueChoices(builder, flag, (Iterator<V>) choices.iterator(), choices.isEmpty() ? "unset number" : "[custom]");
+        appendValueChoices(builder, flag, (Iterator<V>) choices.iterator(), choices.isEmpty() ? "미설정 숫자" : "[직접 입력]");
     }
 
     private void appendStringFlagValue(TextComponent.Builder builder, StringFlag flag) {
@@ -430,7 +430,7 @@ class FlagHelperBox extends PaginationBox {
         if (currVal == null) {
             final String defVal = flag.getDefault();
             if (defVal == null) {
-                appendValueText(builder, flag, "unset string", null);
+                appendValueText(builder, flag, "미설정 문자열", null);
             } else {
                 final TextComponent defComp = LegacyComponentSerializer.INSTANCE.deserialize(defVal);
                 String display = reduceToText(defComp);
@@ -438,7 +438,7 @@ class FlagHelperBox extends PaginationBox {
                 if (display.length() > 23) {
                     display = display.substring(0, 20) + "...";
                 }
-                appendValueText(builder, flag, display, TextComponent.of("Default value:")
+                appendValueText(builder, flag, display, TextComponent.of("기본값:")
                         .append(TextComponent.newline()).append(defComp));
             }
         } else {
@@ -448,7 +448,7 @@ class FlagHelperBox extends PaginationBox {
             if (display.length() > 23) {
                 display = display.substring(0, 20) + "...";
             }
-            appendValueText(builder, flag, display, TextComponent.of("Current value:")
+            appendValueText(builder, flag, display, TextComponent.of("현재 값:")
                     .append(TextComponent.newline()).append(currComp));
         }
     }

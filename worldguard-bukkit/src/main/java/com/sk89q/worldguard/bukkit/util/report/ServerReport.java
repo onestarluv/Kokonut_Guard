@@ -27,48 +27,48 @@ import org.bukkit.Server;
 public class ServerReport extends DataReport {
 
     public ServerReport() {
-        super("Server Information");
+        super("서버 정보");
 
         Server server = Bukkit.getServer();
 
-        append("Bukkit Version", server.getBukkitVersion());
+        append("Bukkit 버전", server.getBukkitVersion());
         append("Implementation", server.getName() + " " + server.getVersion());
-        append("Player Count", "%d/%d", Bukkit.getOnlinePlayers().size(), server.getMaxPlayers());
-        append("Server Class Source", server.getClass().getProtectionDomain().getCodeSource().getLocation());
+        append("플레이어 수", "%d/%d", Bukkit.getOnlinePlayers().size(), server.getMaxPlayers());
+        append("서버 클래스 출처", server.getClass().getProtectionDomain().getCodeSource().getLocation());
 
-        DataReport onlineMode = new DataReport("Online Mode");
-        onlineMode.append("enabled?", server.getOnlineMode());
+        DataReport onlineMode = new DataReport("온라인 모드");
+        onlineMode.append("활성 여부", server.getOnlineMode());
         if (PaperLib.isSpigot()) {
-            onlineMode.append("BungeeCord support?", Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false));
+            onlineMode.append("BungeeCord 지원 여부", Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false));
         }
         if (PaperLib.isPaper()) {
-            onlineMode.append("Velocity support?", Bukkit.spigot().getPaperConfig().getBoolean("proxies.velocity.enabled", false));
+            onlineMode.append("Velocity 지원 여부", Bukkit.spigot().getPaperConfig().getBoolean("proxies.velocity.enabled", false));
         }
         append(onlineMode.getTitle(), onlineMode);
 
         DataReport spawning = new DataReport("Spawning");
-        spawning.append("Ambient Spawn Limit", server.getAmbientSpawnLimit());
-        spawning.append("Animal Spawn Limit", server.getAnimalSpawnLimit());
-        spawning.append("Monster Spawn Limit", server.getMonsterSpawnLimit());
-        spawning.append("Ticks per Animal Spawn", server.getTicksPerAnimalSpawns());
-        spawning.append("Ticks per Monster Spawn", server.getTicksPerMonsterSpawns());
+        spawning.append("주변 생물 생성 제한", server.getAmbientSpawnLimit());
+        spawning.append("동물 생성 제한", server.getAnimalSpawnLimit());
+        spawning.append("몬스터 생성 제한", server.getMonsterSpawnLimit());
+        spawning.append("동물 생성 간격(틱)", server.getTicksPerAnimalSpawns());
+        spawning.append("몬스터 생성 간격(틱)", server.getTicksPerMonsterSpawns());
         append(spawning.getTitle(), spawning);
 
         DataReport config = new DataReport("Configuration");
-        config.append("Nether Enabled?", server.getAllowNether());
-        config.append("The End Enabled?", server.getAllowEnd());
-        config.append("Generate Structures?", server.getGenerateStructures());
-        config.append("Flight Allowed?", server.getAllowFlight());
-        config.append("Connection Throttle", server.getConnectionThrottle());
-        config.append("Idle Timeout", server.getIdleTimeout());
-        config.append("Shutdown Message", server.getShutdownMessage());
-        config.append("Default Game Mode", server.getDefaultGameMode());
-        config.append("Main World Type", server.getWorldType());
-        config.append("View Distance", server.getViewDistance());
+        config.append("네더 활성 여부", server.getAllowNether());
+        config.append("엔드 활성 여부", server.getAllowEnd());
+        config.append("구조물 생성 여부", server.getGenerateStructures());
+        config.append("비행 허용 여부", server.getAllowFlight());
+        config.append("접속 제한 간격", server.getConnectionThrottle());
+        config.append("잠수 시간 제한", server.getIdleTimeout());
+        config.append("종료 메시지", server.getShutdownMessage());
+        config.append("기본 게임 모드", server.getDefaultGameMode());
+        config.append("주 월드 종류", server.getWorldType());
+        config.append("시야 거리", server.getViewDistance());
         append(config.getTitle(), config);
 
         DataReport protection = new DataReport("Protection");
-        protection.append("Spawn Radius", server.getSpawnRadius());
+        protection.append("스폰 반경", server.getSpawnRadius());
         append(protection.getTitle(), protection);
     }
 

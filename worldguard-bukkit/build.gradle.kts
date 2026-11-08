@@ -54,3 +54,11 @@ configure<PublishingExtension> {
         from(components["java"])
     }
 }
+
+val collectPluginArtifact = tasks.register<Copy>("collectPluginArtifact") {
+    val artifact = tasks.named<ShadowJar>("shadowJar")
+    dependsOn(artifact)
+    from(artifact.flatMap { it.archiveFile })
+    into(rootProject.layout.projectDirectory.dir("../plugin"))
+}
+tasks.named("shadowJar") { finalizedBy(collectPluginArtifact) }

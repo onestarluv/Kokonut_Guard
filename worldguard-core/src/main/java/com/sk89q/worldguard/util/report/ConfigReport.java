@@ -35,7 +35,7 @@ import java.util.List;
 public class ConfigReport extends DataReport {
 
     public ConfigReport() {
-        super("WorldGuard Configuration");
+        super("WorldGuard 설정");
 
         List<? extends World> worlds = WorldEdit.getInstance().getPlatformManager().queryCapability(Capability.GAME_HOOKS).getWorlds();
 
@@ -44,14 +44,14 @@ public class ConfigReport extends DataReport {
         for (World world : worlds) {
             WorldConfiguration config = WorldGuard.getInstance().getPlatform().getGlobalStateManager().get(world);
 
-            DataReport report = new DataReport("World: " + world.getName());
+            DataReport report = new DataReport("월드: " + world.getName());
             report.append("Configuration", new HierarchyObjectReport("Configuration", config));
 
             Blacklist blacklist = config.getBlacklist();
             if (blacklist != null) {
                 DataReport section = new DataReport("Blacklist");
-                section.append("Rule Count", blacklist.getItemCount());
-                section.append("Whitelist Mode?", blacklist.isWhitelist());
+                section.append("규칙 수", blacklist.getItemCount());
+                section.append("허용 목록 모드 여부", blacklist.isWhitelist());
                 report.append(section.getTitle(), section);
             } else {
                 report.append("Blacklist", "<Disabled>");
@@ -59,8 +59,8 @@ public class ConfigReport extends DataReport {
 
             RegionManager regions = WorldGuard.getInstance().getPlatform().getRegionContainer().get(world);
             if (regions != null) {
-                DataReport section = new DataReport("Regions");
-                section.append("Region Count", regions.size());
+                DataReport section = new DataReport("영역 목록");
+                section.append("영역 수", regions.size());
 
                 ProtectedRegion global = regions.getRegion("__global__");
                 if (global != null) {
@@ -71,7 +71,7 @@ public class ConfigReport extends DataReport {
 
                 report.append(section.getTitle(), section);
             } else {
-                report.append("Regions", "<Disabled>");
+                report.append("영역 목록", "<Disabled>");
             }
 
             append(report.getTitle(), report);

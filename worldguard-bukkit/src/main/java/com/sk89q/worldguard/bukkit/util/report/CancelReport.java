@@ -81,10 +81,10 @@ public class CancelReport implements Report {
         if (!cancels.isEmpty()) {
             StringBuilder builder = new StringBuilder();
 
-            builder.append("Was the action blocked? ").append(cancellable.isCancelled() ? "YES" : "NO").append("\n");
+            builder.append("행동 차단 여부: ").append(cancellable.isCancelled() ? "YES" : "NO").append("\n");
 
             if (cancels.size() != 1) {
-                builder.append("Entry #1 had the last word.\n");
+                builder.append("항목 #1이 최종 판정을 내렸습니다.\n");
             }
 
             for (int i = cancels.size() - 1; i >= 0; i--) {
@@ -96,12 +96,12 @@ public class CancelReport implements Report {
 
                 builder.append("#").append(index).append(" ");
                 builder.append(getCancelText(cancel.getAfter()));
-                builder.append(" by ");
+                builder.append(" 실행자: ");
 
                 if (detectingPlugin && cause != null) {
                     builder.append(cause.getName());
                 } else {
-                    builder.append(" (NOT KNOWN - use the stack trace below)");
+                    builder.append(" (알 수 없음 - 아래 스택 추적 참조)");
                     builder.append("\n");
                     builder.append(new StackTraceReport(stackTrace).toString().replaceAll("(?m)^", "\t"));
                 }
@@ -111,10 +111,10 @@ public class CancelReport implements Report {
 
             return builder.toString();
         } else {
-            return "No plugins cancelled the event. Other causes for cancellation: " +
-                    "(1) Bukkit may be using a different event for the action " +
-                    " (example: buckets have their own bucket events); or " +
-                    "(2) Minecraft's spawn protection has not been disabled.";
+            return "이벤트를 취소한 플러그인이 없습니다. 다른 취소 원인: " +
+                    "(1) Bukkit이 이 행동에 다른 이벤트를 사용할 수 있습니다. " +
+                    " (예: 양동이는 전용 이벤트 사용), 또는 " +
+                    "(2) Minecraft 기본 스폰 보호가 꺼져 있지 않습니다.";
         }
     }
 

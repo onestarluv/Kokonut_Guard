@@ -198,7 +198,7 @@ class DataLoader {
                 List<BlockVector2> points = pointsCache.get(id);
 
                 if (points.size() < 3) {
-                    log.log(Level.WARNING, "Invalid polygonal region '" + id + "': region has " + points.size() + " point(s) (less than the required 3). Skipping this region.");
+                    log.log(Level.WARNING, "유효하지 않은 다각형 영역: '" + id + "': 꼭짓점 수 " + points.size() + "개 (최소 3개 필요). 이 영역을 건너뜁니다.");
                     continue;
                 }
 
@@ -285,7 +285,7 @@ class DataLoader {
                         try {
                             domain.addPlayer(UUID.fromString(uuid));
                         } catch (IllegalArgumentException e) {
-                            log.warning("Invalid UUID '" + uuid + "' for region '" + region.getId() + "'");
+                            log.warning("유효하지 않은 UUID: '" + uuid + "' 해당 영역: '" + region.getId() + "'");
                         }
                     }
                 }

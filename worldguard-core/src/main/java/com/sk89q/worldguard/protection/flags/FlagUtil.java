@@ -49,7 +49,7 @@ public final class FlagUtil {
             try {
                 rawValues.put(entry.getKey().getName(), marshal(entry.getKey(), entry.getValue()));
             } catch (Throwable e) {
-                log.log(Level.WARNING, "Failed to marshal flag value for " + entry.getKey() + "; value is " + entry.getValue(), e);
+                log.log(Level.WARNING, "플래그 값을 직렬화하지 못했습니다: " + entry.getKey() + "; 값: " + entry.getValue(), e);
             }
         }
 

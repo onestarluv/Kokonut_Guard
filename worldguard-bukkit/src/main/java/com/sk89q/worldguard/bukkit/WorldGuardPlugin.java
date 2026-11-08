@@ -113,6 +113,7 @@ public class WorldGuardPlugin extends JavaPlugin {
     private static BukkitWorldGuardPlatform platform;
     private final CommandsManager<Actor> commands;
     private PlayerMoveListener playerMoveListener;
+    private com.sk89q.worldguard.bukkit.gui.RegionSettingsGui regionSettingsGui;
 
     private static final int BSTATS_PLUGIN_ID = 3283;
 
@@ -240,6 +241,8 @@ public class WorldGuardPlugin extends JavaPlugin {
         }
 
         ((SimpleFlagRegistry) WorldGuard.getInstance().getFlagRegistry()).setInitialized(true);
+        regionSettingsGui = new com.sk89q.worldguard.bukkit.gui.RegionSettingsGui(this);
+        getServer().getPluginManager().registerEvents(regionSettingsGui, this);
 
         // Enable metrics
         final Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID); // bStats plugin id
@@ -302,10 +305,31 @@ public class WorldGuardPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        String commandName = cmd.getName();
+        if (commandName.equals("영역")) {
+            commandName = "region";
+            if (args.length == 0 || args[0].equals("설정") || args[0].equalsIgnoreCase("gui")) {
+                if (sender instanceof Player player) {
+                    regionSettingsGui.open(player, args.length > 1 ? args[1] : null);
+                } else {
+                    sender.sendMessage("게임 안에서만 영역 설정 화면을 열 수 있습니다.");
+                }
+                return true;
+            }
+        }
+        if (commandName.equals("region") && args.length > 0
+                && (args[0].equals("설정") || args[0].equalsIgnoreCase("gui"))) {
+            if (sender instanceof Player player) {
+                regionSettingsGui.open(player, args.length > 1 ? args[1] : null);
+            } else {
+                sender.sendMessage("게임 안에서만 영역 설정 화면을 열 수 있습니다.");
+            }
+            return true;
+        }
         try {
             Actor actor = wrapCommandSender(sender);
             try {
-                commands.execute(cmd.getName(), args, actor, actor);
+                commands.execute(commandName, args, actor, actor);
             } catch (Throwable t) {
                 Throwable next = t;
                 do {
@@ -322,7 +346,7 @@ public class WorldGuardPlugin extends JavaPlugin {
                 throw t;
             }
         } catch (CommandPermissionsException e) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission.");
+            sender.sendMessage(ChatColor.RED + "권한이 없습니다.");
         } catch (MissingNestedCommandException e) {
             sender.sendMessage(ChatColor.RED + e.getUsage());
         } catch (CommandUsageException e) {
@@ -419,15 +443,15 @@ public class WorldGuardPlugin extends JavaPlugin {
     public WorldEditPlugin getWorldEdit() throws CommandException {
         Plugin worldEdit = getServer().getPluginManager().getPlugin("WorldEdit");
         if (worldEdit == null) {
-            throw new CommandException("WorldEdit does not appear to be installed.");
+            throw new CommandException("WorldEdit이 설치되어 있지 않습니다.");
         } else if (!worldEdit.isEnabled()) {
-            throw new CommandException("WorldEdit does not appear to be enabled.");
+            throw new CommandException("WorldEdit이 활성화되어 있지 않습니다.");
         }
 
         if (worldEdit instanceof WorldEditPlugin) {
             return (WorldEditPlugin) worldEdit;
         } else {
-            throw new CommandException("WorldEdit detection failed (report error).");
+            throw new CommandException("WorldEdit 감지 실패 (오류를 제보해 주세요).");
         }
     }
 
@@ -472,7 +496,7 @@ public class WorldGuardPlugin extends JavaPlugin {
         } else if (sender instanceof BukkitCommandSender) {
             return Bukkit.getConsoleSender(); // TODO Fix
         } else {
-            throw new IllegalArgumentException("Unknown actor type. Please report");
+            throw new IllegalArgumentException("알 수 없는 실행자 종류입니다. 제보해 주세요");
         }
     }
 
@@ -535,7 +559,7 @@ public class WorldGuardPlugin extends JavaPlugin {
             if (stream == null) throw new FileNotFoundException();
             copyDefaultConfig(stream, actual, defaultName);
         } catch (IOException e) {
-            getLogger().severe("Unable to read default configuration: " + defaultName);
+            getLogger().severe("기본 설정을 읽을 수 없습니다: " + defaultName);
         }
 
     }
@@ -547,9 +571,9 @@ public class WorldGuardPlugin extends JavaPlugin {
             while ((length = input.read(buf)) > 0) {
                 output.write(buf, 0, length);
             }
-            getLogger().info("Default configuration file written: " + name);
+            getLogger().info("기본 설정 파일 생성 완료: " + name);
         } catch (IOException e) {
-            getLogger().log(Level.WARNING, "Failed to write default config file", e);
+            getLogger().log(Level.WARNING, "기본 설정 파일을 만들지 못했습니다", e);
         }
     }
 
@@ -562,10 +586,10 @@ public class WorldGuardPlugin extends JavaPlugin {
             return getWorldEdit().isFolia(); // Delegate check to WorldEdit
         } catch (NoSuchMethodError _) {
             // Ignore, this likely means an outdated version.
-            LOGGER.warn("Failed to check if server is running Folia, as WorldEdit's Folia support is missing.");
+            LOGGER.warn("WorldEdit의 Folia 지원이 없어 Folia 실행 여부를 확인하지 못했습니다.");
         } catch (Throwable t) {
             // Unknown error, log it and return false.
-            LOGGER.warn("Failed to check if server is running Folia", t);
+            LOGGER.warn("Folia 실행 여부를 확인하지 못했습니다", t);
         }
         return false;
     });

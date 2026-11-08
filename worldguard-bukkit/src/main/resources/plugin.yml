@@ -4,3 +4,8 @@ version: "${internalVersion}"
 depend: [WorldEdit]
 api-version: "26.3"
 folia-supported: true
+commands:
+  영역:
+    description: 영역 관리 및 설정 GUI
+    usage: /영역 [설정 [영역이름]|생성|정보|목록|플래그]
+    aliases: [지역, 보호구역]

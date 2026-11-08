@@ -91,11 +91,11 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
         plugin.createDefaultConfiguration(configFile, "config_world.yml");
         plugin.createDefaultConfiguration(blacklistFile, "blacklist.txt");
 
-        config = new YAMLProcessor(configFile.toPath(), true, YAMLFormat.EXTENDED);
+        config = new YAMLProcessor(configFile, true, YAMLFormat.EXTENDED);
         loadConfiguration();
 
         if (summaryOnStart) {
-            log.info("Loaded configuration for world '" + worldName + "'");
+            log.info("월드 설정 불러옴: '" + worldName + "'");
         }
     }
 
@@ -119,7 +119,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
             try {
                 set.add(matcherParser.fromInput(input));
             } catch (TargetMatcherParseException e) {
-                log.warning("Failed to parse the block / item type specified as '" + input + "'");
+                log.warning("지정한 블록/아이템 종류를 해석하지 못했습니다: '" + input + "'");
             }
         }
 
@@ -134,9 +134,9 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
         try {
             config.load();
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Error reading configuration for world " + worldName + ": ", e);
+            log.log(Level.SEVERE, "설정 읽기 오류가 발생한 월드: " + worldName + ": ", e);
         } catch (YAMLException e) {
-            log.severe("Error parsing configuration for world " + worldName + ". ");
+            log.severe("설정 해석 오류가 발생한 월드: " + worldName + ". ");
             throw e;
         }
 
@@ -147,7 +147,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
 
         buildPermissions = getBoolean("build-permission-nodes.enable", false);
         buildPermissionDenyMessage = CommandUtils.replaceColorMacros(
-                getString("build-permission-nodes.deny-message", "&eSorry, but you are not permitted to do that here."));
+                getString("build-permission-nodes.deny-message", "&e여기에서는 이 행동을 할 권한이 없습니다."));
 
         strictEntitySpawn = getBoolean("event-handling.block-entity-spawns-with-untraceable-cause", false);
         allowAllInteract = getTargetMatchers("event-handling.interaction-whitelist");
@@ -170,7 +170,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
             PotionEffectType effect = PotionEffectType.getByName(potionName);
 
             if (effect == null) {
-                log.warning("Unknown potion effect type '" + potionName + "'");
+                log.warning("알 수 없는 물약 효과 종류: '" + potionName + "'");
             } else {
                 blockPotions.add(effect);
             }
@@ -182,7 +182,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
         spongeRadius = Math.max(1, getInt("simulation.sponge.radius", 3)) - 1;
         redstoneSponges = getBoolean("simulation.sponge.redstone", false);
         if (simulateSponge) {
-            log.warning("Sponge simulation is deprecated for removal in a future version. We recommend using CraftBook's sponge simulation instead.");
+            log.warning("스펀지 모의 기능은 향후 제거될 예정입니다. CraftBook의 스펀지 기능 사용을 권장합니다.");
         } else {
             needParentSave |= removeProperty("simulation");
         }
@@ -326,7 +326,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
             EntityType creature = EntityTypes.get(creatureName.toLowerCase());
 
             if (creature == null) {
-                log.warning("Unknown entity type '" + creatureName + "'");
+                log.warning("알 수 없는 엔티티 종류: '" + creatureName + "'");
             } else {
                 blockCreatureSpawn.add(creature);
             }
@@ -367,7 +367,7 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
             } else {
                 this.blacklist = blist;
                 if (summaryOnStart) {
-                    log.log(Level.INFO, "({0}) Blacklist loaded with {1} entries.",
+                    log.log(Level.INFO, "({0}) 블랙리스트 항목 {1}개를 불러왔습니다.",
                             new Object[]{worldName, blacklist.getItemCount()});
                 }
 
@@ -388,34 +388,34 @@ public class BukkitWorldConfiguration extends YamlWorldConfiguration {
                 }
             }
         } catch (FileNotFoundException e) {
-            log.log(Level.WARNING, "WorldGuard blacklist does not exist.");
+            log.log(Level.WARNING, "WorldGuard 블랙리스트가 없습니다.");
         } catch (IOException e) {
-            log.log(Level.WARNING, "Could not load WorldGuard blacklist: "
+            log.log(Level.WARNING, "WorldGuard 블랙리스트를 불러오지 못했습니다: "
                     + e.getMessage());
         }
 
         // Print an overview of settings
         if (summaryOnStart) {
             log.log(Level.INFO, blockTNTExplosions
-                    ? "(" + worldName + ") TNT ignition is blocked."
-                    : "(" + worldName + ") TNT ignition is PERMITTED.");
+                    ? "(" + worldName + ") TNT 점화를 차단합니다."
+                    : "(" + worldName + ") TNT 점화를 허용합니다.");
             log.log(Level.INFO, blockLighter
-                    ? "(" + worldName + ") Lighters are blocked."
-                    : "(" + worldName + ") Lighters are PERMITTED.");
+                    ? "(" + worldName + ") 부싯돌과 부시를 차단합니다."
+                    : "(" + worldName + ") 부싯돌과 부시를 허용합니다.");
             log.log(Level.INFO, preventLavaFire
-                    ? "(" + worldName + ") Lava fire is blocked."
-                    : "(" + worldName + ") Lava fire is PERMITTED.");
+                    ? "(" + worldName + ") 용암 발화를 차단합니다."
+                    : "(" + worldName + ") 용암 발화를 허용합니다.");
 
             if (disableFireSpread) {
-                log.log(Level.INFO, "(" + worldName + ") All fire spread is disabled.");
+                log.log(Level.INFO, "(" + worldName + ") 모든 불 번짐을 차단합니다.");
             } else {
                 if (!disableFireSpreadBlocks.isEmpty()) {
                     log.log(Level.INFO, "(" + worldName
-                            + ") Fire spread is limited to "
-                            + disableFireSpreadBlocks.size() + " block types.");
+                            + ") 불 번짐을 다음으로 제한합니다: "
+                            + disableFireSpreadBlocks.size() + "개 블록 종류.");
                 } else {
                     log.log(Level.INFO, "(" + worldName
-                            + ") Fire spread is UNRESTRICTED.");
+                            + ") 불 번짐을 제한하지 않습니다.");
                 }
             }
         }

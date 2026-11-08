@@ -136,30 +136,30 @@ public class ClassSourceValidator {
         StringBuilder builder = new StringBuilder("\n");
 
         builder.append(SEPARATOR_LINE).append("\n");
-        builder.append("** /!\\    SEVERE WARNING    /!\\\n");
+        builder.append("** /!\\    심각한 경고    /!\\\n");
         builder.append("** \n");
-        builder.append("** A plugin developer has included a portion of \n");
-        builder.append("** ").append(plugin.getName()).append(" into their own plugin, so rather than using\n");
-        builder.append("** the version of ").append(plugin.getName()).append(" that you downloaded, you\n");
-        builder.append("** will be using a broken mix of old ").append(plugin.getName()).append(" (that came\n");
-        builder.append("** with the plugin) and your downloaded version. THIS MAY\n");
-        builder.append("** SEVERELY BREAK ").append(plugin.getName().toUpperCase(Locale.ROOT)).append(" AND ALL OF ITS FEATURES.\n");
+        builder.append("** 다른 플러그인이 다음 라이브러리 일부를 포함했습니다: \n");
+        builder.append("** ").append(plugin.getName()).append(" (해당 플러그인 내부). 따라서\n");
+        builder.append("** 다운로드한 라이브러리 버전 대신: ").append(plugin.getName()).append(" (사용자 설치본)\n");
+        builder.append("** 서로 다른 버전이 섞인 상태로 실행됩니다: ").append(plugin.getName()).append(" (플러그인 포함본\n");
+        builder.append("** 및 사용자 설치본). 이로 인해\n");
+        builder.append("** 심각한 기능 장애가 발생할 수 있습니다: ").append(plugin.getName().toUpperCase(Locale.ROOT)).append(" 및 관련 기능 전체.\n");
         builder.append("**\n");
-        builder.append("** This may have happened because the developer is using\n");
-        builder.append("** the ").append(plugin.getName()).append(" API and thinks that including\n");
-        builder.append("** ").append(plugin.getName()).append(" is necessary. However, it is not!\n");
+        builder.append("** 플러그인 개발자가 API 사용에 필요한 것으로 오해하여\n");
+        builder.append("** 다음을 포함했을 수 있습니다: ").append(plugin.getName()).append(" API 사용 시\n");
+        builder.append("** ").append(plugin.getName()).append(" 포함은 필요하지 않습니다!\n");
         builder.append("**\n");
-        builder.append("** Here are some files that have been overridden:\n");
+        builder.append("** 덮어쓴 파일 목록:\n");
         builder.append("** \n");
         for (Map.Entry<Class<?>, Plugin> entry : mismatches.entrySet()) {
             Plugin badPlugin = entry.getValue();
             String url = badPlugin == null
                     ? "(unknown)"
                     : badPlugin.getName() + " (" + badPlugin.getClass().getProtectionDomain().getCodeSource().getLocation() + ")";
-            builder.append("** '").append(entry.getKey().getSimpleName()).append("' came from '").append(url).append("'\n");
+            builder.append("** '").append(entry.getKey().getSimpleName()).append("' 출처: '").append(url).append("'\n");
         }
         builder.append("**\n");
-        builder.append("** Please report this to the plugins' developers.\n");
+        builder.append("** 해당 플러그인 개발자에게 알려 주세요.\n");
         builder.append(SEPARATOR_LINE).append("\n");
 
         plugin.getLogger().severe(builder.toString());

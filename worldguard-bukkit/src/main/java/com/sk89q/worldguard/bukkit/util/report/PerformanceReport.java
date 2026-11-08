@@ -37,15 +37,15 @@ public class PerformanceReport extends DataReport {
 
         List<World> worlds = Bukkit.getServer().getWorlds();
 
-        append("World Count", worlds.size());
+        append("월드 수", worlds.size());
 
         for (World world : worlds) {
             int loadedChunkCount = world.getLoadedChunks().length;
 
-            DataReport report = new DataReport("World: " + world.getName());
-            report.append("Keep in Memory?", world.getKeepSpawnInMemory());
-            report.append("Entity Count", world.getEntities().size());
-            report.append("Chunk Count", loadedChunkCount);
+            DataReport report = new DataReport("월드: " + world.getName());
+            report.append("메모리 유지 여부", world.getKeepSpawnInMemory());
+            report.append("엔티티 수", world.getEntities().size());
+            report.append("청크 수", loadedChunkCount);
 
             Map<Class<? extends Entity>, Integer> entityCounts = Maps.newHashMap();
             Map<Class<? extends BlockState>, Integer> tileEntityCounts = Maps.newHashMap();
@@ -64,7 +64,7 @@ public class PerformanceReport extends DataReport {
                     }
                 }
             }
-            report.append("Tile Entity Count", teCount);
+            report.append("블록 엔티티 수", teCount);
 
             // Collect entities
             for (Entity entity : world.getEntities()) {
@@ -78,18 +78,18 @@ public class PerformanceReport extends DataReport {
             }
 
             // Print entities
-            DataReport entities = new DataReport("Entity Distribution");
+            DataReport entities = new DataReport("엔티티 분포");
             for (Map.Entry<Class<? extends Entity>, Integer> entry : entityCounts.entrySet()) {
-                entities.append(entry.getKey().getSimpleName(), "%d [%f/chunk]",
+                entities.append(entry.getKey().getSimpleName(), "%d [청크당 %f]",
                         entry.getValue(),
                         (float) (entry.getValue() / (double) loadedChunkCount));
             }
             report.append(entities.getTitle(), entities);
 
             // Print tile entities
-            DataReport tileEntities = new DataReport("Tile Entity Distribution");
+            DataReport tileEntities = new DataReport("블록 엔티티 분포");
             for (Map.Entry<Class<? extends BlockState>, Integer> entry : tileEntityCounts.entrySet()) {
-                tileEntities.append(entry.getKey().getSimpleName(), "%d [%f/chunk]",
+                tileEntities.append(entry.getKey().getSimpleName(), "%d [청크당 %f]",
                         entry.getValue(),
                         (float) (entry.getValue() / (double) loadedChunkCount));
             }

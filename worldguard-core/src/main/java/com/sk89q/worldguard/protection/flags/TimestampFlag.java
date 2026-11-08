@@ -61,10 +61,10 @@ public class TimestampFlag extends Flag<Instant> {
                 } else if (parsed instanceof ZonedDateTime) {
                     return ((ZonedDateTime) parsed).toInstant();
                 } else {
-                    throw new InvalidFlagFormat("Unrecognized input.");
+                    throw new InvalidFlagFormat("인식할 수 없는 입력입니다.");
                 }
             } catch (DateTimeParseException ignored) {
-                throw new InvalidFlagFormat("Expected 'now' or ISO 8601 formatted input.");
+                throw new InvalidFlagFormat("'now'(현재 시각) 또는 ISO 8601 형식으로 입력하세요.");
             }
         }
     }

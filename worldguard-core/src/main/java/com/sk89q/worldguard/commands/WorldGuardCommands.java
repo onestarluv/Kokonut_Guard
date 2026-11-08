@@ -77,22 +77,22 @@ public class WorldGuardCommands {
         this.worldGuard = worldGuard;
     }
 
-    @Command(aliases = {"version"}, desc = "Get the WorldGuard version", max = 0)
+    @Command(aliases = {"version", "버전"}, desc = "WorldGuard 버전 확인", max = 0)
     public void version(CommandContext args, Actor sender) throws CommandException {
         sender.print("WorldGuard " + WorldGuard.getVersion());
         sender.print("http://www.enginehub.org");
 
-        sender.printDebug("----------- Platforms -----------");
+        sender.printDebug("----------- 플랫폼 -----------");
         sender.printDebug(String.format("* %s (%s)", worldGuard.getPlatform().getPlatformName(), worldGuard.getPlatform().getPlatformVersion()));
     }
 
-    @Command(aliases = {"reload"}, desc = "Reload WorldGuard configuration", max = 0)
+    @Command(aliases = {"reload", "새로고침"}, desc = "WorldGuard 설정 다시 불러오기", max = 0)
     @CommandPermissions({"worldguard.reload"})
     public void reload(CommandContext args, Actor sender) throws CommandException {
         // TODO: This is subject to a race condition, but at least other commands are not being processed concurrently
         List<Task<?>> tasks = WorldGuard.getInstance().getSupervisor().getTasks();
         if (!tasks.isEmpty()) {
-            throw new CommandException("There are currently pending tasks. Use /wg running to monitor these tasks first.");
+            throw new CommandException("대기 중인 작업이 있습니다. /월드가드 작업으로 먼저 확인하세요.");
         }
         
         LoggerToChatHandler handler = null;
@@ -114,9 +114,9 @@ public class WorldGuardCommands {
             }
             WorldGuard.getInstance().getPlatform().getRegionContainer().reload();
             // WGBukkit.cleanCache();
-            sender.print("WorldGuard configuration reloaded.");
+            sender.print("WorldGuard 설정을 다시 불러왔습니다.");
         } catch (Throwable t) {
-            sender.printError("Error while reloading: " + t.getMessage());
+            sender.printError("다시 불러오는 중 오류 발생: " + t.getMessage());
         } finally {
             if (minecraftLogger != null) {
                 minecraftLogger.removeHandler(handler);
@@ -124,10 +124,10 @@ public class WorldGuardCommands {
         }
     }
     
-    @Command(aliases = {"report"}, desc = "Writes a report on WorldGuard", flags = "p", max = 0)
+    @Command(aliases = {"report", "보고서"}, desc = "WorldGuard 보고서 작성", flags = "p", max = 0)
     @CommandPermissions({"worldguard.report"})
     public void report(CommandContext args, final Actor sender) throws CommandException, AuthorizationException {
-        ReportList report = new ReportList("Report");
+        ReportList report = new ReportList("보고서");
         worldGuard.getPlatform().addPlatformReports(report);
         report.add(new SystemInfoReport());
         report.add(new ConfigReport());
@@ -139,19 +139,19 @@ public class WorldGuardCommands {
         try {
             File dest = new File(worldGuard.getPlatform().getConfigDir().toFile(), "report.txt");
             Files.write(result, dest, StandardCharsets.UTF_8);
-            sender.print("WorldGuard report written to " + dest.getAbsolutePath());
+            sender.print("WorldGuard 보고서 저장 위치: " + dest.getAbsolutePath());
         } catch (IOException e) {
-            throw new CommandException("Failed to write report: " + e.getMessage());
+            throw new CommandException("보고서를 작성하지 못했습니다: " + e.getMessage());
         }
         
         if (args.hasFlag('p')) {
             sender.checkPermission("worldguard.report.pastebin");
-            ActorCallbackPaste.pastebin(worldGuard.getSupervisor(), sender, result, "WorldGuard report: %s.report");
+            ActorCallbackPaste.pastebin(worldGuard.getSupervisor(), sender, result, "WorldGuard 보고서: %s.report");
         }
     }
 
-    @Command(aliases = {"profile"}, usage = "[-p] [-i <interval>] [-t <thread filter>] [<minutes>]",
-            desc = "Profile the CPU usage of the server", min = 0, max = 1,
+    @Command(aliases = {"profile", "측정"}, usage = "[-p] [-i <간격>] [-t <스레드 필터>] [<분>]",
+            desc = "서버 CPU 사용량 측정", min = 0, max = 1,
             flags = "t:i:p")
     @CommandPermissions("worldguard.profile")
     public void profile(final CommandContext args, final Actor sender) throws CommandException, AuthorizationException {
@@ -180,9 +180,9 @@ public class WorldGuardCommands {
         } else {
             minutes = args.getInteger(0);
             if (minutes < 1) {
-                throw new CommandException("You must run the profile for at least 1 minute.");
+                throw new CommandException("최소 1분 동안 측정해야 합니다.");
             } else if (minutes > 10) {
-                throw new CommandException("You can profile for, at maximum, 10 minutes.");
+                throw new CommandException("최대 10분까지 측정할 수 있습니다.");
             }
         }
 
@@ -190,17 +190,17 @@ public class WorldGuardCommands {
         if (args.hasFlag('i')) {
             interval = args.getFlagInteger('i');
             if (interval < 1 || interval > 100) {
-                throw new CommandException("Interval must be between 1 and 100 (in milliseconds)");
+                throw new CommandException("측정 간격은 1~100밀리초여야 합니다");
             }
             if (interval < 10) {
-                sender.printDebug("Note: A low interval may cause additional slowdown during profiling.");
+                sender.printDebug("짧은 측정 간격은 추가적인 지연을 유발할 수 있습니다.");
             }
         }
         Sampler sampler;
 
         synchronized (this) {
             if (activeSampler != null) {
-                throw new CommandException("A profile is currently in progress! Please use /wg stopprofile to cancel the current profile.");
+                throw new CommandException("이미 CPU 측정 중입니다! /월드가드 측정중지로 취소하세요.");
             }
 
             SamplerBuilder builder = new SamplerBuilder();
@@ -210,15 +210,15 @@ public class WorldGuardCommands {
             sampler = activeSampler = builder.start();
         }
 
-        sender.print(TextComponent.of("Starting CPU profiling. Results will be available in " + minutes + " minutes.", TextColor.LIGHT_PURPLE)
+        sender.print(TextComponent.of("CPU 측정을 시작합니다. 결과 확인까지 " + minutes + "분 남았습니다.", TextColor.LIGHT_PURPLE)
                 .append(TextComponent.newline())
-                .append(TextComponent.of("Use ", TextColor.GRAY))
+                .append(TextComponent.of("사용할 명령어: ", TextColor.GRAY))
                 .append(TextComponent.of("/wg stopprofile", TextColor.AQUA)
                         .clickEvent(ClickEvent.of(ClickEvent.Action.SUGGEST_COMMAND, "/wg stopprofile")))
-                .append(TextComponent.of(" at any time to cancel CPU profiling.", TextColor.GRAY)));
+                .append(TextComponent.of(" (언제든 CPU 측정을 취소할 수 있습니다).", TextColor.GRAY)));
 
         worldGuard.getSupervisor().monitor(FutureForwardingTask.create(
-                sampler.getFuture(), "CPU profiling for " + minutes + " minutes", sender));
+                sampler.getFuture(), "CPU 측정 시간: " + minutes + "분", sender));
 
         sampler.getFuture().addListener(() -> {
             synchronized (WorldGuardCommands.this) {
@@ -234,13 +234,13 @@ public class WorldGuardCommands {
                 try {
                     File dest = new File(worldGuard.getPlatform().getConfigDir().toFile(), "profile.txt");
                     Files.write(output, dest, StandardCharsets.UTF_8);
-                    sender.print("CPU profiling data written to " + dest.getAbsolutePath());
+                    sender.print("CPU 측정 데이터 저장 위치: " + dest.getAbsolutePath());
                 } catch (IOException e) {
-                    sender.printError("Failed to write CPU profiling data: " + e.getMessage());
+                    sender.printError("CPU 측정 데이터를 저장하지 못했습니다: " + e.getMessage());
                 }
 
                 if (pastebin) {
-                    ActorCallbackPaste.pastebin(worldGuard.getSupervisor(), sender, output, "Profile result: %s.profile");
+                    ActorCallbackPaste.pastebin(worldGuard.getSupervisor(), sender, output, "측정 결과: %s.profile");
                 }
             }
 
@@ -250,48 +250,48 @@ public class WorldGuardCommands {
         }, MoreExecutors.directExecutor());
     }
 
-    @Command(aliases = {"stopprofile"}, usage = "",desc = "Stop a running profile", min = 0, max = 0)
+    @Command(aliases = {"stopprofile", "측정중지"}, usage = "",desc = "진행 중인 측정 중지", min = 0, max = 0)
     @CommandPermissions("worldguard.profile")
     public void stopProfile(CommandContext args, final Actor sender) throws CommandException {
         synchronized (this) {
             if (activeSampler == null) {
-                throw new CommandException("No CPU profile is currently running.");
+                throw new CommandException("진행 중인 CPU 측정이 없습니다.");
             }
 
             activeSampler.cancel();
             activeSampler = null;
         }
 
-        sender.print("The running CPU profile has been cancelled.");
+        sender.print("CPU 측정을 취소했습니다.");
     }
 
-    @Command(aliases = {"flushstates", "clearstates"},
-            usage = "[player]", desc = "Flush the state manager", max = 1)
+    @Command(aliases = {"flushstates", "clearstates", "상태초기화"},
+            usage = "[플레이어]", desc = "상태 관리자 초기화", max = 1)
     @CommandPermissions("worldguard.flushstates")
     public void flushStates(CommandContext args, Actor sender) throws CommandException {
         if (args.argsLength() == 0) {
             WorldGuard.getInstance().getPlatform().getSessionManager().resetAllStates();
-            sender.print("Cleared all states.");
+            sender.print("모든 상태를 초기화했습니다.");
         } else {
             LocalPlayer player = worldGuard.getPlatform().getMatcher().matchSinglePlayer(sender, args.getString(0));
             if (player != null) {
                 WorldGuard.getInstance().getPlatform().getSessionManager().resetState(player);
-                sender.print("Cleared states for player \"" + player.getName() + "\".");
+                sender.print("상태를 초기화한 플레이어: \"" + player.getName() + "\".");
             }
         }
     }
 
-    @Command(aliases = {"running", "queue"}, desc = "List running tasks", max = 0)
+    @Command(aliases = {"running", "queue", "작업"}, desc = "실행 중인 작업 목록", max = 0)
     @CommandPermissions("worldguard.running")
     public void listRunningTasks(CommandContext args, Actor sender) throws CommandException {
         List<Task<?>> tasks = WorldGuard.getInstance().getSupervisor().getTasks();
 
         if (tasks.isEmpty()) {
-            sender.print("There are currently no running tasks.");
+            sender.print("실행 중인 작업이 없습니다.");
         } else {
             tasks.sort(new TaskStateComparator());
-            MessageBox builder = new MessageBox("Running Tasks", new TextComponentProducer());
-            builder.append(TextComponent.of("Note: Some 'running' tasks may be waiting to be start.", TextColor.GRAY));
+            MessageBox builder = new MessageBox("실행 중인 작업", new TextComponentProducer());
+            builder.append(TextComponent.of("일부 작업은 실행 대기 상태일 수 있습니다.", TextColor.GRAY));
             for (Task<?> task : tasks) {
                 builder.append(TextComponent.newline());
                 builder.append(TextComponent.of("(" + task.getState().name() + ") ", TextColor.BLUE));
@@ -302,7 +302,7 @@ public class WorldGuardCommands {
         }
     }
 
-    @Command(aliases = {"debug"}, desc = "Debugging commands")
+    @Command(aliases = {"debug", "디버그"}, desc = "디버깅 명령어")
     @NestedCommand({DebuggingCommands.class})
     public void debug(CommandContext args, Actor sender) {}
 

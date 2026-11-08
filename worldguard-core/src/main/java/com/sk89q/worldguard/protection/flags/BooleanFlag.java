@@ -38,14 +38,14 @@ public class BooleanFlag extends Flag<Boolean> {
         
         if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("yes")
                 || input.equalsIgnoreCase("on")
-                || input.equalsIgnoreCase("1")) {
+                || input.equalsIgnoreCase("1") || input.equals("켜기") || input.equals("켜짐")) {
             return true;
         } else if (input.equalsIgnoreCase("false") || input.equalsIgnoreCase("no")
                 || input.equalsIgnoreCase("off")
-                || input.equalsIgnoreCase("0")) {
+                || input.equalsIgnoreCase("0") || input.equals("끄기") || input.equals("꺼짐")) {
             return false;
         } else {
-            throw new InvalidFlagFormat("Not a yes/no value: " + input);
+            throw new InvalidFlagFormat("켜짐/꺼짐 값이 아닙니다: " + input);
         }
     }
 

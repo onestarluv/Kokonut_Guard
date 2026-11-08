@@ -45,7 +45,7 @@ public class WorldHeightMigration extends AbstractMigration {
             maxField = ProtectedRegion.class.getDeclaredField("max");
             maxField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new ExceptionInInitializerError(new MigrationException("Migrator broke.", e));
+            throw new ExceptionInInitializerError(new MigrationException("이전 처리에 실패했습니다.", e));
         }
     }
 
@@ -63,14 +63,14 @@ public class WorldHeightMigration extends AbstractMigration {
     protected void migrate(RegionDatabase store) throws MigrationException {
         if (world != null && !store.getName().equals(world.getName())) return;
 
-        log.log(Level.INFO, "Migrating regions in '" + store.getName() + "' to new height limits...");
+        log.log(Level.INFO, "영역 이전 중: '" + store.getName() + "' 새 높이 제한으로 변경 중...");
 
         Set<ProtectedRegion> regions;
 
         try {
             regions = store.loadAll(flagRegistry);
         } catch (StorageException e) {
-            throw new MigrationException("Failed to load region data for the world '" + store.getName() + "'", e);
+            throw new MigrationException("영역 데이터를 불러오지 못한 월드: '" + store.getName() + "'", e);
         }
 
         int min = -64;
@@ -93,7 +93,7 @@ public class WorldHeightMigration extends AbstractMigration {
         try {
             store.saveAll(regions);
         } catch (StorageException e) {
-            throw new MigrationException("Failed to save region data after migration of the world '" + store.getName() + "'", e);
+            throw new MigrationException("이전 후 영역 데이터를 저장하지 못한 월드: '" + store.getName() + "'", e);
         }
     }
 
@@ -103,12 +103,12 @@ public class WorldHeightMigration extends AbstractMigration {
             maxField.set(region, region.getMaximumPoint().withY(max));
             region.setDirty(true);
         } catch (IllegalAccessException e) {
-            throw new MigrationException("Migrator broke.", e);
+            throw new MigrationException("이전 처리에 실패했습니다.", e);
         }
     }
 
     @Override
     protected void postMigration() {
-        log.log(Level.INFO, "A total of " + changed + " top-to-bottom regions were vertically expanded.");
+        log.log(Level.INFO, "총 " + changed + "개 영역을 새 높이 제한까지 확장했습니다.");
     }
 }

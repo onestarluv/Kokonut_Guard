@@ -155,11 +155,11 @@ public abstract class RegionContainer {
 
         synchronized (lock) {
             try {
-                WorldGuard.logger.info("Unloading and saving region data that is currently loaded...");
+                WorldGuard.logger.info("현재 불러온 영역 데이터를 저장하고 해제하는 중...");
                 unload();
                 migration.migrate();
             } finally {
-                WorldGuard.logger.info("Loading region data for loaded worlds...");
+                WorldGuard.logger.info("불러온 월드의 영역 데이터 읽는 중...");
                 loadWorlds();
             }
         }
@@ -169,7 +169,7 @@ public abstract class RegionContainer {
      * Try loading the region managers for all currently loaded worlds.
      */
     protected void loadWorlds() {
-        WorldGuard.logger.info("Loading region data...");
+        WorldGuard.logger.info("영역 데이터 불러오는 중...");
         synchronized (lock) {
             for (World world : WorldEdit.getInstance().getPlatformManager().queryCapability(Capability.GAME_HOOKS).getWorlds()) {
                 load(world);
@@ -203,12 +203,12 @@ public abstract class RegionContainer {
             try {
                 migrate(migrator);
 
-                WorldGuard.logger.info("Regions saved after UUID migration! This won't happen again unless " +
-                        "you change the relevant configuration option in WorldGuard's config.");
+                WorldGuard.logger.info("UUID 이전 후 영역을 저장했습니다! 관련 설정을 변경하지 않는 한 " +
+                        "이 작업은 다시 실행되지 않습니다.");
 
                 config.disableUuidMigration();
             } catch (MigrationException e) {
-                WorldGuard.logger.log(Level.WARNING, "Failed to execute the migration", e);
+                WorldGuard.logger.log(Level.WARNING, "이전을 실행하지 못했습니다", e);
             }
         }
     }

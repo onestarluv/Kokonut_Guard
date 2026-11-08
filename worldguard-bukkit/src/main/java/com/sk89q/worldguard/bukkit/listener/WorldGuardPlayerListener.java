@@ -92,7 +92,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
                     localPlayer.getWorld())) {
                 GameMode expected = handler.getSetGameMode();
                 if (handler.getOriginalGameMode() != null && expected != null && expected != BukkitAdapter.adapt(event.getNewGameMode())) {
-                    log.info("Game mode change on " + player.getName() + " has been blocked due to the region GAMEMODE flag");
+                    log.info("게임 모드 변경 대상: " + player.getName() + " (영역의 게임 모드 플래그로 인해 차단됨)");
                     event.setCancelled(true);
                 }
             }
@@ -109,7 +109,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
 
         if (cfg.activityHaltToggle) {
             player.sendMessage(ChatColor.YELLOW
-                    + "Intensive server activity has been HALTED.");
+                    + "부하가 큰 서버 활동이 중지되었습니다.");
 
             int removed = 0;
 
@@ -121,14 +121,14 @@ public class WorldGuardPlayerListener extends AbstractListener {
             }
 
             if (removed > 10) {
-                log.info("Halt-Act: " + removed + " entities (>10) auto-removed from "
+                log.info("활동 중지: " + removed + "개의 엔티티(10개 초과) 자동 제거 위치: "
                         + player.getWorld());
             }
         }
 
         if (wcfg.fireSpreadDisableToggle) {
             player.sendMessage(ChatColor.YELLOW
-                    + "Fire spread is currently globally disabled for this world.");
+                    + "현재 이 월드의 불 번짐이 전역으로 꺼져 있습니다.");
         }
 
         Events.fire(new ProcessPlayerEvent(player));
@@ -188,10 +188,10 @@ public class WorldGuardPlayerListener extends AbstractListener {
                     && !(cfg.hostKeysAllowFMLClients &&
                             (hostname.equals(hostKey + "\u0000FML\u0000") || hostname.equals(hostKey + "\u0000FML2\u0000")))) {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER,
-                        "You did not join with the valid host key!");
-                log.warning("WorldGuard host key check: " +
-                        player.getName() + " joined with '" + hostname +
-                        "' but '" + hostKey + "' was expected. Kicked!");
+                        "유효한 호스트 키로 접속하지 않았습니다!");
+                log.warning("WorldGuard 호스트 키 검사: " +
+                        player.getName() + " 접속 시 사용한 키: '" + hostname +
+                        "' 필요한 키: '" + hostKey + "'. 연결을 종료했습니다!");
                 return;
             }
         }
@@ -221,7 +221,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
             ItemStack heldItem = player.getInventory().getItem(slot);
             if (heldItem != null && heldItem.getAmount() < 0) {
                 player.getInventory().setItem(slot, null);
-                player.sendMessage(ChatColor.RED + "Infinite stack removed.");
+                player.sendMessage(ChatColor.RED + "무한 스택을 제거했습니다.");
             }
         }
     }
@@ -252,7 +252,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
                 ItemStack heldItem = player.getInventory().getItem(slot);
                 if (heldItem != null && heldItem.getAmount() < 0) {
                     player.getInventory().setItem(slot, null);
-                    player.sendMessage(ChatColor.RED + "Infinite stack in slot #" + slot + " removed.");
+                    player.sendMessage(ChatColor.RED + "무한 스택 슬롯 번호: #" + slot + " 제거됨.");
                 }
             }
         }
@@ -264,7 +264,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
                 ApplicableRegionSet set = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery()
                         .getApplicableRegions(BukkitAdapter.adapt(block.getLocation()), RegionQuery.QueryOption.SORT);
                 if (set.size() > 0) {
-                    player.sendMessage(ChatColor.YELLOW + "Can you build? " + (set.testState(localPlayer, Flags.BUILD) ? "Yes" : "No"));
+                    player.sendMessage(ChatColor.YELLOW + "건축 가능 여부: " + (set.testState(localPlayer, Flags.BUILD) ? "Yes" : "No"));
 
                     StringBuilder str = new StringBuilder();
                     for (Iterator<ProtectedRegion> it = set.iterator(); it.hasNext();) {
@@ -274,9 +274,9 @@ public class WorldGuardPlayerListener extends AbstractListener {
                         }
                     }
 
-                    localPlayer.print("Applicable regions: " + str);
+                    localPlayer.print("적용되는 영역: " + str);
                 } else {
-                    localPlayer.print("WorldGuard: No defined regions here!");
+                    localPlayer.print("WorldGuard: 이곳에는 지정된 영역이 없습니다!");
                 }
 
                 event.setUseItemInHand(Event.Result.DENY);
@@ -343,7 +343,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
             ItemStack heldItem = player.getInventory().getItem(newSlot);
             if (heldItem != null && heldItem.getAmount() < 0) {
                 player.getInventory().setItem(newSlot, null);
-                player.sendMessage(ChatColor.RED + "Infinite stack removed.");
+                player.sendMessage(ChatColor.RED + "무한 스택을 제거했습니다.");
             }
         }
     }
@@ -430,7 +430,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
 
             if (!test.apply(event.getMessage())) {
                 String message = set.queryValue(localPlayer, Flags.DENY_MESSAGE);
-                RegionProtectionListener.formatAndSendDenyMessage("use " + event.getMessage(), localPlayer, message);
+                RegionProtectionListener.formatAndSendDenyMessage("사용: " + event.getMessage(), localPlayer, message);
                 event.setCancelled(true);
                 return;
             }
@@ -438,7 +438,7 @@ public class WorldGuardPlayerListener extends AbstractListener {
 
         if (cfg.blockInGameOp) {
             if (opPattern.matcher(event.getMessage()).matches()) {
-                player.sendMessage(ChatColor.RED + "/op and /deop can only be used in console (as set by a WG setting).");
+                player.sendMessage(ChatColor.RED + "/op와 /deop는 WorldGuard 설정에 따라 콘솔에서만 사용할 수 있습니다.");
                 event.setCancelled(true);
                 return;
             }

@@ -411,14 +411,14 @@ public class DefaultDomain implements Domain, ChangeTracked {
             final UUID uuid = profileMap.get(name);
             if (uuid == null) {
                 return TextComponent.of(name, TextColor.YELLOW)
-                        .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Name only", TextColor.GRAY)
-                            .append(TextComponent.newline()).append(TextComponent.of("Click to copy"))))
+                        .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("이름만 저장됨", TextColor.GRAY)
+                            .append(TextComponent.newline()).append(TextComponent.of("클릭하여 복사"))))
                         .clickEvent(ClickEvent.of(ClickEvent.Action.COPY_TO_CLIPBOARD, name));
             } else {
                 return TextComponent.of(name, TextColor.YELLOW)
-                        .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Last known name of uuid: ", TextColor.GRAY)
+                        .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("UUID의 마지막 확인 이름: ", TextColor.GRAY)
                             .append(TextComponent.of(uuid.toString(), TextColor.WHITE))
-                            .append(TextComponent.newline()).append(TextComponent.of("Click to copy"))))
+                            .append(TextComponent.newline()).append(TextComponent.of("클릭하여 복사"))))
                         .clickEvent(ClickEvent.of(ClickEvent.Action.COPY_TO_CLIPBOARD, uuid.toString()));
             }
         }).iterator();
@@ -430,11 +430,11 @@ public class DefaultDomain implements Domain, ChangeTracked {
         }
 
         if (!uuids.isEmpty()) {
-            builder.append(TextComponent.of(uuids.size() + " unknown uuid" + (uuids.size() == 1 ? "" : "s"), TextColor.GRAY)
-                    .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Unable to resolve the name for:", TextColor.GRAY)
+            builder.append(TextComponent.of(uuids.size() + " 알 수 없는 UUID" + (uuids.size() == 1 ? "" : "s"), TextColor.GRAY)
+                    .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("다음 이름을 확인할 수 없습니다:", TextColor.GRAY)
                         .append(TextComponent.newline())
                         .append(TextComponent.of(String.join("\n", uuids), TextColor.WHITE))
-                        .append(TextComponent.newline().append(TextComponent.of("Click to copy")))))
+                        .append(TextComponent.newline().append(TextComponent.of("클릭하여 복사")))))
                     .clickEvent(ClickEvent.of(ClickEvent.Action.COPY_TO_CLIPBOARD, String.join(",", uuids))));
         }
 

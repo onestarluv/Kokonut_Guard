@@ -33,7 +33,7 @@ public class UnknownFlag extends Flag<Object> {
 
     @Override
     public Object parseInput(FlagContext context) throws InvalidFlagFormat {
-        throw new InvalidFlagFormat("The plugin that registered this flag is not currently installed");
+        throw new InvalidFlagFormat("이 플래그를 등록한 플러그인이 설치되어 있지 않습니다");
     }
 
     @Override

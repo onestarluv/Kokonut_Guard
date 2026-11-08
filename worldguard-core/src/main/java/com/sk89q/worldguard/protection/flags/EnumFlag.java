@@ -79,7 +79,7 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
         try {
             return findValue(input);
         } catch (IllegalArgumentException e) {
-            throw new InvalidFlagFormat("Unknown value '" + input + "' in "
+            throw new InvalidFlagFormat("알 수 없는 값: '" + input + "' 위치: "
                     + enumClass.getName());
         }
     }

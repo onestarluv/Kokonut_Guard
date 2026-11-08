@@ -35,41 +35,41 @@ public class WorldReport extends DataReport {
 
         List<World> worlds = Bukkit.getServer().getWorlds();
 
-        append("World Count", worlds.size());
+        append("월드 수", worlds.size());
 
         for (World world : worlds) {
-            DataReport report = new DataReport("World: " + world.getName());
+            DataReport report = new DataReport("월드: " + world.getName());
             report.append("UUID", world.getUID());
-            report.append("World Type", world.getWorldType());
+            report.append("월드 종류", world.getWorldType());
             report.append("Environment", world.getEnvironment());
             ChunkGenerator generator = world.getGenerator();
-            report.append("Chunk Generator", generator != null ? generator.getClass().getName() : "<Default>");
+            report.append("청크 생성기", generator != null ? generator.getClass().getName() : "<Default>");
 
             DataReport spawning = new DataReport("Spawning");
-            spawning.append("Animals?", world.getAllowAnimals());
-            spawning.append("Monsters?", world.getAllowMonsters());
-            spawning.append("Ambient Spawn Limit", world.getAmbientSpawnLimit());
-            spawning.append("Animal Spawn Limit", world.getAnimalSpawnLimit());
-            spawning.append("Monster Spawn Limit", world.getMonsterSpawnLimit());
-            spawning.append("Water Creature Spawn Limit", world.getWaterAnimalSpawnLimit());
+            spawning.append("동물 허용 여부", world.getAllowAnimals());
+            spawning.append("몬스터 허용 여부", world.getAllowMonsters());
+            spawning.append("주변 생물 생성 제한", world.getAmbientSpawnLimit());
+            spawning.append("동물 생성 제한", world.getAnimalSpawnLimit());
+            spawning.append("몬스터 생성 제한", world.getMonsterSpawnLimit());
+            spawning.append("수중 생물 생성 제한", world.getWaterAnimalSpawnLimit());
             report.append(spawning.getTitle(), spawning);
 
             DataReport config = new DataReport("Configuration");
             config.append("Difficulty", world.getDifficulty());
-            config.append("Max Height", world.getMaxHeight());
-            config.append("Sea Level", world.getSeaLevel());
+            config.append("최대 높이", world.getMaxHeight());
+            config.append("해수면 높이", world.getSeaLevel());
             report.append(config.getTitle(), config);
 
             DataReport state = new DataReport("State");
-            state.append("Spawn Location", world.getSpawnLocation());
-            state.append("Full Time", world.getFullTime());
-            state.append("Weather Duration", world.getWeatherDuration());
-            state.append("Thunder Duration", world.getThunderDuration());
+            state.append("스폰 위치", world.getSpawnLocation());
+            state.append("전체 시간", world.getFullTime());
+            state.append("날씨 지속 시간", world.getWeatherDuration());
+            state.append("천둥 지속 시간", world.getThunderDuration());
             report.append(state.getTitle(), state);
 
             DataReport protection = new DataReport("Protection");
-            protection.append("PVP?", world.getPVP());
-            protection.append("Game Rules", Arrays.stream(world.getGameRules())
+            protection.append("플레이어 간 전투 허용 여부", world.getPVP());
+            protection.append("게임 규칙", Arrays.stream(world.getGameRules())
                     .map(name -> name + "=" + world.getGameRuleValue(name))
                     .collect(Collectors.joining(", ")));
             report.append(protection.getTitle(), protection);

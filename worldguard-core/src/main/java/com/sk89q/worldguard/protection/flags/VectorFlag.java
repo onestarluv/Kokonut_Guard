@@ -56,7 +56,7 @@ public class VectorFlag extends Flag<Vector3> {
                 }
             }
 
-            throw new InvalidFlagFormat("Expected 'here' or x,y,z.");
+            throw new InvalidFlagFormat("'here'(현재 위치) 또는 x,y,z를 입력하세요.");
         }
     }
 

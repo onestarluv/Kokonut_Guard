@@ -43,8 +43,8 @@ public class FailedLoadRegionSet extends AbstractRegionSet {
 
     private static final FailedLoadRegionSet INSTANCE = new FailedLoadRegionSet();
 
-    private final String denyMessage = "Region data for WorldGuard failed to load for this world, so " +
-            "everything has been protected as a precaution. Please inform a server administrator.";
+    private final String denyMessage = "이 월드의 WorldGuard 영역 데이터를 불러오지 못해 " +
+            "임시로 모든 행동을 보호하고 있습니다. 서버 관리자에게 알려 주세요.";
     private final Collection<String> denyMessageCollection = ImmutableList.of(denyMessage);
 
     private FailedLoadRegionSet() {

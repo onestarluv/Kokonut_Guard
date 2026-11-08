@@ -94,8 +94,8 @@ public class BlockedPotionsListener extends AbstractListener {
                 if (getPlugin().hasPermission(player, "worldguard.override.potions")) {
                     return;
                 }
-                player.sendMessage(ChatColor.RED + "Sorry, arrows with "
-                        + blockedEffect.getName() + " are presently disabled.");
+                player.sendMessage(ChatColor.RED + "화살에 적용된 효과: "
+                        + blockedEffect.getName() + " (현재 비활성화되어 있습니다).");
             }
             event.setCancelled(true);
         }
@@ -139,15 +139,15 @@ public class BlockedPotionsListener extends AbstractListener {
                     if (getPlugin().hasPermission(player, "worldguard.override.potions")) {
                         if (wcfg.blockPotionsAlways && (item.getType() == Material.SPLASH_POTION
                                 || item.getType() == Material.LINGERING_POTION)) {
-                            player.sendMessage(ChatColor.RED + "Sorry, potions with " +
-                                    blockedEffect.getName() + " can't be thrown, " +
-                                    "even if you have a permission to bypass it, " +
-                                    "due to limitations (and because overly-reliable potion blocking is on).");
+                            player.sendMessage(ChatColor.RED + "물약에 적용된 효과: " +
+                                    blockedEffect.getName() + " (던질 수 없습니다). " +
+                                    "우회 권한이 있어도 적용되며, " +
+                                    "기능상의 한계와 엄격한 물약 차단 설정 때문입니다.");
                             event.setCancelled(true);
                         }
                     } else {
-                        player.sendMessage(ChatColor.RED + "Sorry, potions with "
-                                + blockedEffect.getName() + " are presently disabled.");
+                        player.sendMessage(ChatColor.RED + "물약에 적용된 효과: "
+                                + blockedEffect.getName() + " (현재 비활성화되어 있습니다).");
                         event.setCancelled(true);
                     }
                 } else {

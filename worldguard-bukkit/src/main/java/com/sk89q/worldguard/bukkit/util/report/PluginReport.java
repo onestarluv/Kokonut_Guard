@@ -30,23 +30,23 @@ public class PluginReport extends DataReport {
 
         Plugin[] plugins = Bukkit.getServer().getPluginManager().getPlugins();
 
-        append("Plugin Count", plugins.length);
+        append("플러그인 수", plugins.length);
 
         for (Plugin plugin : plugins) {
-            DataReport report = new DataReport("Plugin: " + plugin.getName());
-            report.append("Enabled?", plugin.isEnabled());
-            report.append("Full Name", plugin.getDescription().getFullName());
+            DataReport report = new DataReport("플러그인: " + plugin.getName());
+            report.append("활성 여부", plugin.isEnabled());
+            report.append("전체 이름", plugin.getDescription().getFullName());
             report.append("Version", plugin.getDescription().getVersion());
             report.append("Website", plugin.getDescription().getWebsite());
             report.append("Description", plugin.getDescription().getDescription());
             report.append("Authors", plugin.getDescription().getAuthors());
-            report.append("Load Before", plugin.getDescription().getLoadBefore());
+            report.append("먼저 불러올 플러그인", plugin.getDescription().getLoadBefore());
             report.append("Dependencies", plugin.getDescription().getDepend());
-            report.append("Soft Dependencies", plugin.getDescription().getSoftDepend());
+            report.append("선택 의존성", plugin.getDescription().getSoftDepend());
             report.append("Folder", plugin.getDataFolder().getAbsoluteFile());
-            report.append("Entry Point", plugin.getDescription().getMain());
+            report.append("진입점", plugin.getDescription().getMain());
             report.append("Class", plugin.getClass().getName());
-            report.append("Class Source", plugin.getClass().getProtectionDomain().getCodeSource().getLocation());
+            report.append("클래스 출처", plugin.getClass().getProtectionDomain().getCodeSource().getLocation());
             append(report.getTitle(), report);
         }
     }

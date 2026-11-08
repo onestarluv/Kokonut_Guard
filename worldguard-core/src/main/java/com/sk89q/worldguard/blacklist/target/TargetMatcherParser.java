@@ -38,7 +38,7 @@ public class TargetMatcherParser {
         } else {
             ItemType itemType = ItemTypes.get(input);
             if (itemType == null) {
-                throw new TargetMatcherParseException("Unknown block or item name: " + input);
+                throw new TargetMatcherParseException("알 수 없는 블록 또는 아이템 이름: " + input);
             }
             return new ItemMatcher(itemType);
         }

@@ -57,7 +57,7 @@ class RegionRemover {
         } else if (currentType.equals("global")) {
             // Nothing to do
         } else {
-            throw new RuntimeException("Unknown type of region in the database: " + currentType);
+            throw new RuntimeException("데이터베이스의 알 수 없는 영역 종류: " + currentType);
         }
 
     }

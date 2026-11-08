@@ -41,7 +41,7 @@ abstract class BlockBlacklistEvent extends AbstractBlacklistEvent {
 
     @Override
     public String getLoggerMessage() {
-        return getPlayerName() + " tried to " + getDescription() + " " + PlainComponentSerializer.INSTANCE.serialize(getTarget().getFriendlyNameComponent());
+        return getPlayerName() + " 시도한 행동: " + getDescription() + " " + PlainComponentSerializer.INSTANCE.serialize(getTarget().getFriendlyNameComponent());
     }
 
     @Override

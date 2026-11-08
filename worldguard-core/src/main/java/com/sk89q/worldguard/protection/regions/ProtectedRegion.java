@@ -79,7 +79,7 @@ public abstract class ProtectedRegion implements ChangeTracked, Comparable<Prote
         checkNotNull(id);
 
         if (!isValidId(id)) {
-            throw new IllegalArgumentException("Invalid region ID: " + id);
+            throw new IllegalArgumentException("유효하지 않은 영역 ID: " + id);
         }
 
         this.id = Normal.normalize(id);

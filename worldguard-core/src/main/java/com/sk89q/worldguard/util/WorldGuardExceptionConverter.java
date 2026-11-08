@@ -48,10 +48,10 @@ public class WorldGuardExceptionConverter extends ExceptionConverterHelper {
         final Matcher matcher = numberFormat.matcher(e.getMessage());
 
         if (matcher.matches()) {
-            throw newCommandException("Number expected; string \"" + matcher.group(1)
-                    + "\" given.", e);
+            throw newCommandException("숫자가 필요합니다. 입력한 문자열: \"" + matcher.group(1)
+                    + "\".", e);
         } else {
-            throw newCommandException("Number expected; string given.", e);
+            throw newCommandException("숫자가 필요하지만 문자열이 입력되었습니다.", e);
         }
     }
 
@@ -62,23 +62,23 @@ public class WorldGuardExceptionConverter extends ExceptionConverterHelper {
 
     @ExceptionMatch
     public void convert(StorageException e) throws CommandException {
-        WorldGuard.logger.log(Level.WARNING, "Error loading/saving regions", e);
-        throw newCommandException("Region data could not be loaded/saved: " + e.getMessage(), e);
+        WorldGuard.logger.log(Level.WARNING, "영역 불러오기/저장 오류", e);
+        throw newCommandException("영역 데이터를 불러오거나 저장하지 못했습니다: " + e.getMessage(), e);
     }
 
     @ExceptionMatch
     public void convert(RejectedExecutionException e) throws CommandException {
-        throw newCommandException("There are currently too many tasks queued to add yours. Use /wg running to list queued and running tasks.", e);
+        throw newCommandException("대기 중인 작업이 너무 많습니다. /월드가드 작업으로 작업 목록을 확인하세요.", e);
     }
 
     @ExceptionMatch
     public void convert(CancellationException e) throws CommandException {
-        throw newCommandException("Task was cancelled.", e);
+        throw newCommandException("작업이 취소되었습니다.", e);
     }
 
     @ExceptionMatch
     public void convert(InterruptedException e) throws CommandException {
-        throw newCommandException("Task was interrupted.", e);
+        throw newCommandException("작업이 중단되었습니다.", e);
     }
 
     @ExceptionMatch
@@ -93,6 +93,6 @@ public class WorldGuardExceptionConverter extends ExceptionConverterHelper {
 
     @ExceptionMatch
     public void convert(AuthorizationException e) throws CommandException {
-        throw newCommandException("You don't have permission to do that.", e);
+        throw newCommandException("이 작업을 실행할 권한이 없습니다.", e);
     }
 }

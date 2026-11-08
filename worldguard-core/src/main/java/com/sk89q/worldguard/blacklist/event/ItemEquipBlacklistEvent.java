@@ -40,7 +40,7 @@ public final class ItemEquipBlacklistEvent extends ItemBlacklistEvent {
 
     @Override
     public String getDescription() {
-        return "equip";
+        return "장착";
     }
 
     @Override

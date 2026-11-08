@@ -91,7 +91,7 @@ public class SQLDriver implements RegionDriver {
             }
             return stores;
         } catch (SQLException e) {
-            throw new StorageException("Failed to fetch list of worlds", e);
+            throw new StorageException("월드 목록을 조회하지 못했습니다", e);
         } finally {
             closer.closeQuietly();
         }
@@ -107,7 +107,7 @@ public class SQLDriver implements RegionDriver {
             try {
                 migrate();
             } catch (SQLException e) {
-                throw new StorageException("Failed to migrate database tables", e);
+                throw new StorageException("데이터베이스 테이블을 이전하지 못했습니다", e);
             }
             initialized = true;
         }
@@ -142,8 +142,8 @@ public class SQLDriver implements RegionDriver {
             // We don't bother with migrating really old tables
             if (tablesExist && !isRecent) {
                 throw new StorageException(
-                        "Sorry, your tables are too old for the region SQL auto-migration system. " +
-                                "Please run region_manual_update_20110325.sql on your database, which comes " +
+                        "영역 SQL 자동 이전을 사용하기에는 테이블이 너무 오래되었습니다. " +
+                                "데이터베이스에서 제공된 region_manual_update_20110325.sql을 실행하세요. " +
                                 "with WorldGuard or can be found in http://github.com/sk89q/worldguard");
             }
 
@@ -164,7 +164,7 @@ public class SQLDriver implements RegionDriver {
                         flyway.setInitVersion(MigrationVersion.fromVersion("1"));
                     }
 
-                    log.log(Level.INFO, "The SQL region tables exist but the migrations table seems to not exist yet. Creating the migrations table...");
+                    log.log(Level.INFO, "영역 SQL 테이블은 있지만 이전 기록 테이블이 없습니다. 이전 기록 테이블 생성 중...");
                 } else {
                     // By default, if Flyway sees any tables at all in the schema, it
                     // will assume that we are up to date, so we have to manually
@@ -172,7 +172,7 @@ public class SQLDriver implements RegionDriver {
                     // if our test table doesn't exist
                     flyway.setInitVersion(MigrationVersion.fromVersion("0"));
 
-                    log.log(Level.INFO, "SQL region tables do not exist: creating...");
+                    log.log(Level.INFO, "영역 SQL 테이블이 없습니다. 생성 중...");
                 }
             }
 
@@ -184,7 +184,7 @@ public class SQLDriver implements RegionDriver {
             flyway.setValidateOnMigrate(false);
             flyway.migrate();
         } catch (FlywayException e) {
-            throw new StorageException("Failed to migrate tables", e);
+            throw new StorageException("테이블을 이전하지 못했습니다", e);
         } finally {
             closer.closeQuietly();
         }
@@ -245,12 +245,12 @@ public class SQLDriver implements RegionDriver {
         try {
             return future.get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            throw new SQLException("Failed to get a SQL connection because the operation was interrupted", e);
+            throw new SQLException("작업이 중단되어 SQL 연결을 얻지 못했습니다", e);
         } catch (ExecutionException e) {
-            throw new SQLException("Failed to get a SQL connection due to an error", e);
+            throw new SQLException("오류로 인해 SQL 연결을 얻지 못했습니다", e);
         } catch (TimeoutException e) {
             future.cancel(true);
-            throw new SQLException("Failed to get a SQL connection within the time limit");
+            throw new SQLException("제한 시간 안에 SQL 연결을 얻지 못했습니다");
         }
     }
 

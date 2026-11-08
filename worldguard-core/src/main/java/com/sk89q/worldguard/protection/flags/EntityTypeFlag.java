@@ -45,7 +45,7 @@ public class EntityTypeFlag extends Flag<EntityType> {
         input = input.trim();
         EntityType entityType = unmarshal(input);
         if (entityType == null) {
-            throw new InvalidFlagFormat("Unknown entity type: " + input);
+            throw new InvalidFlagFormat("알 수 없는 엔티티 종류: " + input);
         }
         return entityType;
     }

@@ -41,7 +41,7 @@ public class UUIDFlag extends Flag<UUID> {
         try {
             return UUID.fromString(input);
         } catch (IllegalArgumentException e) {
-            throw new InvalidFlagFormat("Not a valid uuid: " + input);
+            throw new InvalidFlagFormat("올바른 UUID가 아닙니다: " + input);
         }
     }
 

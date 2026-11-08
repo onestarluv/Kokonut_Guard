@@ -59,26 +59,26 @@ public class DriverMigration extends AbstractMigration {
     protected void migrate(RegionDatabase store) throws MigrationException {
         Set<ProtectedRegion> regions;
 
-        log.info("Loading the regions for '" + store.getName() + "' with the old driver...");
+        log.info("영역 불러오는 중: '" + store.getName() + "' 기존 드라이버 사용...");
 
         try {
             regions = store.loadAll(flagRegistry);
         } catch (StorageException e) {
-            throw new MigrationException("Failed to load region data for the world '" + store.getName() + "'", e);
+            throw new MigrationException("영역 데이터를 불러오지 못한 월드: '" + store.getName() + "'", e);
         }
 
         write(store.getName(), regions);
     }
 
     private void write(String name, Set<ProtectedRegion> regions) throws MigrationException {
-        log.info("Saving the data for '" + name + "' with the new driver...");
+        log.info("데이터 저장 중: '" + name + "' 새 드라이버 사용...");
 
         RegionDatabase store = target.get(name);
 
         try {
             store.saveAll(regions);
         } catch (StorageException e) {
-            throw new MigrationException("Failed to save region data for '" + store.getName() + "' to the new driver", e);
+            throw new MigrationException("영역 데이터를 저장하지 못한 월드: '" + store.getName() + "' 새 드라이버 대상", e);
         }
     }
 

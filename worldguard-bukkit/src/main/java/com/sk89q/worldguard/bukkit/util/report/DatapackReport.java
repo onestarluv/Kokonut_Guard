@@ -34,12 +34,12 @@ public class DatapackReport extends DataReport {
 
         Collection<Datapack> packs = Bukkit.getDatapackManager().getPacks();
 
-        append("Datapack Count", packs.size());
-        append("Datapack Enabled Count", Bukkit.getDatapackManager().getEnabledPacks().size());
+        append("데이터 팩 수", packs.size());
+        append("활성 데이터 팩 수", Bukkit.getDatapackManager().getEnabledPacks().size());
 
         for (Datapack pack : packs) {
-            DataReport report = new DataReport("DataPack: " + pack.getName());
-            report.append("Enabled?", pack.isEnabled());
+            DataReport report = new DataReport("데이터 팩: " + pack.getName());
+            report.append("활성 여부", pack.isEnabled());
             report.append("Name", pack.getName());
             report.append("Compatibility", pack.getCompatibility().name());
             append(report.getTitle(), report);

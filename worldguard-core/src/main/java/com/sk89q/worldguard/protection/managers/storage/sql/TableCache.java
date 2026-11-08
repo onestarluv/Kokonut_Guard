@@ -177,7 +177,7 @@ abstract class TableCache<V> {
                         if (generatedKeys.next()) {
                             cache.put(toKey(entry), generatedKeys.getInt(1));
                         } else {
-                            log.warning("Could not get the database ID for entry " + entry);
+                            log.warning("항목의 데이터베이스 ID를 얻지 못했습니다: " + entry);
                         }
                     }
                 } finally {

@@ -389,7 +389,7 @@ public class FlagValueCalculator {
 
         // Check to see whether we have a subject if this is BUILD
         if (flag.requiresSubject() && subject == null) {
-            throw new NullPointerException("The " + flag.getName() + " flag is handled in a special fashion and requires a non-null subject parameter");
+            throw new NullPointerException("대상: " + flag.getName() + " 플래그는 특수 처리되므로 비어 있지 않은 대상 인수가 필요합니다");
         }
 
         int minimumPriority = Integer.MIN_VALUE;

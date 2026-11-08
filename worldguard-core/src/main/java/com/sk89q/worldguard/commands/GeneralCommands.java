@@ -39,8 +39,8 @@ public class GeneralCommands {
         this.worldGuard = worldGuard;
     }
     
-    @Command(aliases = {"god"}, usage = "[player]",
-            desc = "Enable godmode on a player", flags = "s", max = 1)
+    @Command(aliases = {"god", "무적"}, usage = "[플레이어]",
+            desc = "플레이어 무적 모드 켜기", flags = "s", max = 1)
     public void god(CommandContext args, Actor sender) throws CommandException, AuthorizationException {
         Iterable<? extends LocalPlayer> targets = null;
         boolean included = false;
@@ -66,12 +66,12 @@ public class GeneralCommands {
 
                 // Tell the user
                 if (player.equals(sender)) {
-                    player.print("God mode enabled! Use /ungod to disable.");
+                    player.print("무적 모드를 켰습니다! /무적해제로 해제하세요.");
 
                     // Keep track of this
                     included = true;
                 } else if (!args.hasFlag('s')) {
-                    player.print("God enabled by " + sender.getDisplayName() + ".");
+                    player.print("무적 모드를 켠 사용자: " + sender.getDisplayName() + ".");
 
                 }
             }
@@ -80,12 +80,12 @@ public class GeneralCommands {
         // The player didn't receive any items, then we need to send the
         // user a message so s/he know that something is indeed working
         if (!included) {
-            sender.print("Players now have god mode.");
+            sender.print("플레이어들의 무적 모드를 켰습니다.");
         }
     }
     
-    @Command(aliases = {"ungod"}, usage = "[player]",
-            desc = "Disable godmode on a player", flags = "s", max = 1)
+    @Command(aliases = {"ungod", "무적해제"}, usage = "[플레이어]",
+            desc = "플레이어 무적 모드 끄기", flags = "s", max = 1)
     public void ungod(CommandContext args, Actor sender) throws CommandException, AuthorizationException {
         Iterable<? extends LocalPlayer> targets;
         boolean included = false;
@@ -109,12 +109,12 @@ public class GeneralCommands {
             if (GodMode.set(player, session, false)) {
                 // Tell the user
                 if (player.equals(sender)) {
-                    player.print("God mode disabled!");
+                    player.print("무적 모드를 껐습니다!");
 
                     // Keep track of this
                     included = true;
                 } else if (!args.hasFlag('s')) {
-                    player.print("God disabled by " + sender.getDisplayName() + ".");
+                    player.print("무적 모드를 끈 사용자: " + sender.getDisplayName() + ".");
 
                 }
             }
@@ -123,11 +123,11 @@ public class GeneralCommands {
         // The player didn't receive any items, then we need to send the
         // user a message so s/he know that something is indeed working
         if (!included) {
-            sender.print("Players no longer have god mode.");
+            sender.print("플레이어들의 무적 모드를 껐습니다.");
         }
     }
     
-    @Command(aliases = {"heal"}, usage = "[player]", desc = "Heal a player", flags = "s", max = 1)
+    @Command(aliases = {"heal", "치료"}, usage = "[플레이어]", desc = "플레이어 치료", flags = "s", max = 1)
     public void heal(CommandContext args, Actor sender) throws CommandException, AuthorizationException {
 
         Iterable<? extends LocalPlayer> targets = null;
@@ -154,12 +154,12 @@ public class GeneralCommands {
             
             // Tell the user
             if (player.equals(sender)) {
-                player.print("Healed!");
+                player.print("치료되었습니다!");
                 
                 // Keep track of this
                 included = true;
             } else if (!args.hasFlag('s')) {
-                player.print("Healed by " + sender.getDisplayName() + ".");
+                player.print("치료한 사용자: " + sender.getDisplayName() + ".");
                 
             }
         }
@@ -167,11 +167,11 @@ public class GeneralCommands {
         // The player didn't receive any items, then we need to send the
         // user a message so s/he know that something is indeed working
         if (!included) {
-            sender.print("Players healed.");
+            sender.print("플레이어들을 치료했습니다.");
         }
     }
     
-    @Command(aliases = {"slay"}, usage = "[player]", desc = "Slay a player", flags = "s", max = 1)
+    @Command(aliases = {"slay", "처치"}, usage = "[플레이어]", desc = "플레이어 처치", flags = "s", max = 1)
     public void slay(CommandContext args, Actor sender) throws CommandException, AuthorizationException {
         
         Iterable<? extends LocalPlayer> targets = Lists.newArrayList();
@@ -195,12 +195,12 @@ public class GeneralCommands {
             
             // Tell the user
             if (player.equals(sender)) {
-                player.print("Slain!");
+                player.print("처치되었습니다!");
                 
                 // Keep track of this
                 included = true;
             } else if (!args.hasFlag('s')) {
-                player.print("Slain by " + sender.getDisplayName() + ".");
+                player.print("처치한 사용자: " + sender.getDisplayName() + ".");
                 
             }
         }
@@ -208,11 +208,11 @@ public class GeneralCommands {
         // The player didn't receive any items, then we need to send the
         // user a message so s/he know that something is indeed working
         if (!included) {
-            sender.print("Players slain.");
+            sender.print("플레이어들을 처치했습니다.");
         }
     }
     
-    @Command(aliases = {"locate"}, usage = "[player]", desc = "Locate a player", max = 1)
+    @Command(aliases = {"locate", "위치찾기"}, usage = "[플레이어]", desc = "플레이어 위치 찾기", max = 1)
     @CommandPermissions({"worldguard.locate"})
     public void locate(CommandContext args, Actor sender) throws CommandException {
         LocalPlayer player = worldGuard.checkPlayer(sender);
@@ -220,23 +220,23 @@ public class GeneralCommands {
         if (args.argsLength() == 0) {
             player.setCompassTarget(new Location(player.getWorld(), player.getWorld().getSpawnPosition().toVector3()));
             
-            sender.print("Compass reset to spawn.");
+            sender.print("나침반을 스폰 위치로 초기화했습니다.");
         } else {
             LocalPlayer target = worldGuard.getPlatform().getMatcher().matchSinglePlayer(sender, args.getString(0));
             player.setCompassTarget(target.getLocation());
             
-            sender.print("Compass repointed.");
+            sender.print("나침반 방향을 변경했습니다.");
         }
     }
     
     @SuppressWarnings("removal")
-    @Command(aliases = {"stack", ";"}, usage = "", desc = "Stack items", max = 0)
+    @Command(aliases = {"stack", ";", "묶기"}, usage = "", desc = "아이템 묶기", max = 0)
     @CommandPermissions({"worldguard.stack"})
     public void stack(CommandContext args, Actor sender) throws CommandException {
         LocalPlayer player = worldGuard.checkPlayer(sender);
 
         WorldGuard.getInstance().getPlatform().stackPlayerInventory(player);
 
-        player.print("Items compacted into stacks!");
+        player.print("아이템을 묶었습니다!");
     }
 }

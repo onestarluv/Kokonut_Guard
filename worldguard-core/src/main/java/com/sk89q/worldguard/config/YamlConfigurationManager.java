@@ -44,11 +44,11 @@ public abstract class YamlConfigurationManager extends ConfigurationManager {
     public void load() {
         copyDefaults();
 
-        config = new YAMLProcessor(new File(getDataFolder(), "config.yml").toPath(), true, YAMLFormat.EXTENDED);
+        config = new YAMLProcessor(new File(getDataFolder(), "config.yml"), true, YAMLFormat.EXTENDED);
         try {
             config.load();
         } catch (IOException e) {
-            log.severe("Error reading configuration for global config: ");
+            log.severe("전역 설정 읽기 오류: ");
             e.printStackTrace();
         }
 
@@ -97,7 +97,7 @@ public abstract class YamlConfigurationManager extends ConfigurationManager {
         if (!useSqlDatabase) {
             config.removeProperty("regions.sql");
         } else {
-            log.warning("SQL support for WorldGuard region storage is deprecated for removal in a future version. Please migrate to YAML storage.");
+            log.warning("영역 SQL 저장 기능은 향후 제거될 예정입니다. YAML 저장으로 이전하세요.");
             log.warning("For details, see https://worldguard.enginehub.org/en/latest/regions/storage/");
         }
 
@@ -126,7 +126,7 @@ public abstract class YamlConfigurationManager extends ConfigurationManager {
     public void disableUuidMigration() {
         config.setProperty("regions.uuid-migration.perform-on-next-start", false);
         if (!config.save()) {
-            log.severe("Error saving configuration!");
+            log.severe("설정을 저장하지 못했습니다!");
         }
     }
 }

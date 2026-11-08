@@ -89,7 +89,7 @@ class SQLRegionDatabase implements RegionDatabase {
             try {
                 worldId = chooseWorldId(worldName);
             } catch (SQLException e) {
-                throw new StorageException("Failed to choose the ID for this world", e);
+                throw new StorageException("이 월드의 ID를 선택하지 못했습니다", e);
             }
 
             initialized = true;
@@ -129,7 +129,7 @@ class SQLRegionDatabase implements RegionDatabase {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("Expected result, got none");
+                    throw new SQLException("결과가 필요하지만 결과가 없습니다");
                 }
             }
         } finally {
@@ -179,7 +179,7 @@ class SQLRegionDatabase implements RegionDatabase {
         } else if (region instanceof GlobalProtectedRegion) {
             return "global";
         } else {
-            throw new IllegalArgumentException("Unexpected region type: " + region.getClass().getName());
+            throw new IllegalArgumentException("예상하지 못한 영역 종류: " + region.getClass().getName());
         }
     }
 
@@ -210,13 +210,13 @@ class SQLRegionDatabase implements RegionDatabase {
             try {
                 loader = new DataLoader(this, closer.register(getConnection()), flagRegistry);
             } catch (SQLException e) {
-                throw new StorageException("Failed to get a connection to the database", e);
+                throw new StorageException("데이터베이스에 연결하지 못했습니다", e);
             }
 
             try {
                 return loader.load();
             } catch (SQLException e) {
-                throw new StorageException("Failed to save the region data to the database", e);
+                throw new StorageException("영역 데이터를 데이터베이스에 저장하지 못했습니다", e);
             }
         } finally {
             closer.closeQuietly();
@@ -236,13 +236,13 @@ class SQLRegionDatabase implements RegionDatabase {
             try {
                 updater = new DataUpdater(this, closer.register(getConnection()));
             } catch (SQLException e) {
-                throw new StorageException("Failed to get a connection to the database", e);
+                throw new StorageException("데이터베이스에 연결하지 못했습니다", e);
             }
 
             try {
                 updater.saveAll(regions);
             } catch (SQLException e) {
-                throw new StorageException("Failed to save the region data to the database", e);
+                throw new StorageException("영역 데이터를 데이터베이스에 저장하지 못했습니다", e);
             }
         } finally {
             closer.closeQuietly();
@@ -262,13 +262,13 @@ class SQLRegionDatabase implements RegionDatabase {
             try {
                 updater = new DataUpdater(this, closer.register(getConnection()));
             } catch (SQLException e) {
-                throw new StorageException("Failed to get a connection to the database", e);
+                throw new StorageException("데이터베이스에 연결하지 못했습니다", e);
             }
 
             try {
                 updater.saveChanges(difference.getChanged(), difference.getRemoved());
             } catch (SQLException e) {
-                throw new StorageException("Failed to save the region data to the database", e);
+                throw new StorageException("영역 데이터를 데이터베이스에 저장하지 못했습니다", e);
             }
         } finally {
             closer.closeQuietly();

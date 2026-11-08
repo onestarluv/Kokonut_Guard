@@ -45,7 +45,7 @@ public class WeatherTypeFlag extends Flag<WeatherType> {
         input = input.trim();
         WeatherType weatherType = unmarshal(input);
         if (weatherType == null) {
-            throw new InvalidFlagFormat("Unknown weather type: " + input);
+            throw new InvalidFlagFormat("알 수 없는 날씨 종류: " + input);
         }
         return weatherType;
     }

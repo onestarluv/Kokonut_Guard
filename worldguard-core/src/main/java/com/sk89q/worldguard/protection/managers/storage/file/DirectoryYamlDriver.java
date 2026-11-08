@@ -66,7 +66,7 @@ public class DirectoryYamlDriver implements RegionDriver {
             f.getCanonicalPath();
             return f;
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid file path for the world's regions file");
+            throw new IllegalArgumentException("월드 영역 파일 경로가 유효하지 않습니다");
         }
     }
 

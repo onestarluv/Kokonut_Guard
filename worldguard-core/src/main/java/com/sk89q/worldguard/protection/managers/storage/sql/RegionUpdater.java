@@ -225,7 +225,7 @@ class RegionUpdater {
                 stmt.setBoolean(3, owner);
                 batch.addBatch();
             } else {
-                log.log(Level.WARNING, "Did not find an ID for the user identified as '" + name + "'");
+                log.log(Level.WARNING, "이름으로 사용자 ID를 찾지 못했습니다: '" + name + "'");
             }
         }
 
@@ -237,7 +237,7 @@ class RegionUpdater {
                 stmt.setBoolean(3, owner);
                 batch.addBatch();
             } else {
-                log.log(Level.WARNING, "Did not find an ID for the user identified by '" + uuid + "'");
+                log.log(Level.WARNING, "식별자로 사용자 ID를 찾지 못했습니다: '" + uuid + "'");
             }
         }
     }
@@ -293,7 +293,7 @@ class RegionUpdater {
                 stmt.setBoolean(3, owner);
                 batch.addBatch();
             } else {
-                log.log(Level.WARNING, "Did not find an ID for the group identified as '" + name + "'");
+                log.log(Level.WARNING, "그룹 ID를 찾지 못했습니다: '" + name + "'");
             }
         }
     }

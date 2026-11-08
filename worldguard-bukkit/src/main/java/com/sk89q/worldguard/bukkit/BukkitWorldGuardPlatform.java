@@ -146,9 +146,15 @@ public class BukkitWorldGuardPlatform implements WorldGuardPlatform {
 
     @Override
     public void unload() {
-        sessionManager.shutdown();
-        configuration.unload();
-        regionContainer.shutdown();
+        if (sessionManager != null) {
+            sessionManager.shutdown();
+        }
+        if (configuration != null) {
+            configuration.unload();
+        }
+        if (regionContainer != null) {
+            regionContainer.shutdown();
+        }
     }
 
     @Override

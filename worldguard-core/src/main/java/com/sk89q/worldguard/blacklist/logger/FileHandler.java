@@ -77,7 +77,7 @@ public class FileHandler implements LoggerHandler {
      */
     public FileHandler(String pathPattern, int cacheSize, String worldName, Logger logger) {
         if (cacheSize < 1) {
-            throw new IllegalArgumentException("Cache size cannot be less than 1");
+            throw new IllegalArgumentException("캐시 크기는 1 이상이어야 합니다");
         }
         this.pathPattern = pathPattern;
         this.cacheSize = cacheSize;
@@ -156,7 +156,7 @@ public class FileHandler implements LoggerHandler {
         if (path == null) return;
         try {
             String date = dateFormat.format(new Date());
-            String line = "[" + date + "] " + (player != null ? player.getName() : "Unknown Source") + ": " + message
+            String line = "[" + date + "] " + (player != null ? player.getName() : "알 수 없는 출처") + ": " + message
                     + (comment != null ? " (" + comment + ")" : "") + "\r\n";
 
             LogFileWriter writer = writers.get(path);
@@ -210,7 +210,7 @@ public class FileHandler implements LoggerHandler {
             }
 
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Failed to log blacklist event to '"
+            logger.log(Level.WARNING, "블랙리스트 이벤트를 파일에 기록하지 못했습니다: '"
                     + path + "': " + e.getMessage());
         }
     }
@@ -226,7 +226,7 @@ public class FileHandler implements LoggerHandler {
     }
 
     private void logEvent(BlacklistEvent event, String text, Target target, BlockVector3 pos, String comment) {
-        log(event.getPlayer(), "Tried to " + text + " " + PlainComponentSerializer.INSTANCE.serialize(target.getFriendlyNameComponent()) + " " + getCoordinates(pos), comment);
+        log(event.getPlayer(), "시도한 행동: " + text + " " + PlainComponentSerializer.INSTANCE.serialize(target.getFriendlyNameComponent()) + " " + getCoordinates(pos), comment);
     }
 
     @Override

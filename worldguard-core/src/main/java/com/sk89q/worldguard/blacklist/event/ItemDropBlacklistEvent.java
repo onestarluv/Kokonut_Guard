@@ -40,7 +40,7 @@ public final class ItemDropBlacklistEvent extends ItemBlacklistEvent {
 
     @Override
     public String getDescription() {
-        return "drop";
+        return "버리기";
     }
 
     @Override

@@ -49,8 +49,8 @@ public class ToggleCommands {
         this.worldGuard = worldGuard;
     }
 
-    @Command(aliases = {"stopfire"}, usage = "[<world>]",
-            desc = "Disables all fire spread temporarily", max = 1)
+    @Command(aliases = {"stopfire", "불중지"}, usage = "[<월드>]",
+            desc = "모든 불 번짐 일시 중지", max = 1)
     @CommandPermissions({"worldguard.fire-toggle.stop"})
     public void stopFire(CommandContext args, Actor sender) throws CommandException {
         
@@ -66,17 +66,17 @@ public class ToggleCommands {
 
         if (!wcfg.fireSpreadDisableToggle) {
             worldGuard.getPlatform().broadcastNotification(
-                    LabelFormat.wrap("Fire spread has been globally disabled for '" + world.getName() + "' by "
+                    LabelFormat.wrap("불 번짐을 전역으로 끈 월드: '" + world.getName() + "' 실행자: "
                     + sender.getDisplayName() + "."));
         } else {
-            sender.print("Fire spread was already globally disabled.");
+            sender.print("불 번짐이 이미 전역으로 꺼져 있습니다.");
         }
 
         wcfg.fireSpreadDisableToggle = true;
     }
 
-    @Command(aliases = {"allowfire"}, usage = "[<world>]",
-            desc = "Allows all fire spread temporarily", max = 1)
+    @Command(aliases = {"allowfire", "불허용"}, usage = "[<월드>]",
+            desc = "모든 불 번짐 다시 허용", max = 1)
     @CommandPermissions({"worldguard.fire-toggle.stop"})
     public void allowFire(CommandContext args, Actor sender) throws CommandException {
         
@@ -91,17 +91,17 @@ public class ToggleCommands {
         WorldConfiguration wcfg = WorldGuard.getInstance().getPlatform().getGlobalStateManager().get(world);
 
         if (wcfg.fireSpreadDisableToggle) {
-            worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("Fire spread has been globally for '" + world.getName() + "' re-enabled by "
+            worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("불 번짐을 전역으로 켠 월드: '" + world.getName() + "' 실행자: "
                     + sender.getDisplayName() + "."));
         } else {
-            sender.print("Fire spread was already globally enabled.");
+            sender.print("불 번짐이 이미 전역으로 켜져 있습니다.");
         }
 
         wcfg.fireSpreadDisableToggle = false;
     }
 
-    @Command(aliases = {"halt-activity", "stoplag", "haltactivity"}, usage = "[confirm]",
-            desc = "Attempts to cease as much activity in order to stop lag", flags = "cis", max = 1)
+    @Command(aliases = {"halt-activity", "stoplag", "haltactivity", "활동중지"}, usage = "[confirm 확인]",
+            desc = "서버 부하를 줄이기 위해 활동 제한", flags = "cis", max = 1)
     @CommandPermissions({"worldguard.halt-activity"})
     public void stopLag(CommandContext args, Actor sender) throws CommandException {
 
@@ -109,9 +109,9 @@ public class ToggleCommands {
 
         if (args.hasFlag('i')) {
             if (configManager.activityHaltToggle) {
-                 sender.print("ALL intensive server activity is not allowed.");
+                 sender.print("부하가 큰 모든 서버 활동을 제한합니다.");
             } else {
-                 sender.print("ALL intensive server activity is allowed.");
+                 sender.print("부하가 큰 모든 서버 활동을 허용합니다.");
             }
         } else {
             boolean activityHaltToggle = !args.hasFlag('c');
@@ -120,18 +120,18 @@ public class ToggleCommands {
                 String confirmCommand = "/" + args.getCommand() + " confirm";
 
                 TextComponent message = TextComponent.builder("")
-                        .append(ErrorFormat.wrap("This command will "))
-                        .append(ErrorFormat.wrap("PERMANENTLY")
+                        .append(ErrorFormat.wrap("이 명령어는 "))
+                        .append(ErrorFormat.wrap("영구적으로")
                                 .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-                        .append(ErrorFormat.wrap(" erase ALL animals in ALL loaded chunks in ALL loaded worlds. "))
+                        .append(ErrorFormat.wrap(" 모든 월드의 불러온 청크에 있는 모든 동물을 제거합니다. "))
                         .append(TextComponent.newline())
-                        .append(TextComponent.of("[Click]", TextColor.GREEN)
+                        .append(TextComponent.of("[클릭]", TextColor.GREEN)
                                 .clickEvent(ClickEvent.of(ClickEvent.Action.RUN_COMMAND, confirmCommand))
-                                .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to confirm /" + args.getCommand()))))
-                        .append(ErrorFormat.wrap(" or type "))
+                                .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("클릭하여 확인: /" + args.getCommand()))))
+                        .append(ErrorFormat.wrap(" 또는 입력: "))
                         .append(CodeFormat.wrap(confirmCommand)
                                 .clickEvent(ClickEvent.of(ClickEvent.Action.SUGGEST_COMMAND, confirmCommand)))
-                        .append(ErrorFormat.wrap(" to confirm."))
+                        .append(ErrorFormat.wrap(" (실행 확인)."))
                         .build();
 
                 sender.print(message);
@@ -142,13 +142,13 @@ public class ToggleCommands {
 
             if (activityHaltToggle) {
                 if (!(sender instanceof LocalPlayer)) {
-                    sender.print("ALL intensive server activity halted.");
+                    sender.print("부하가 큰 모든 서버 활동을 중지했습니다.");
                 }
 
                 if (!args.hasFlag('s')) {
-                    worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("ALL intensive server activity halted by " + sender.getDisplayName() + "."));
+                    worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("서버 활동을 중지한 사용자: " + sender.getDisplayName() + "."));
                 } else {
-                    sender.print("(Silent) ALL intensive server activity halted by " + sender.getDisplayName() + ".");
+                    sender.print("(알림 없이) 서버 활동을 중지한 사용자: " + sender.getDisplayName() + ".");
                 }
 
                 for (World world : WorldEdit.getInstance().getPlatformManager().queryCapability(Capability.GAME_HOOKS).getWorlds()) {
@@ -162,19 +162,19 @@ public class ToggleCommands {
                     }
 
                     if (removed > 10) {
-                        sender.printRaw("" + removed + " entities (>10) auto-removed from "
+                        sender.printRaw("" + removed + "개의 엔티티(10개 초과) 자동 제거 위치: "
                                 + world.getName());
                     }
                 }
             } else {
                 if (!args.hasFlag('s')) {
-                    worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("ALL intensive server activity is now allowed."));
+                    worldGuard.getPlatform().broadcastNotification(LabelFormat.wrap("부하가 큰 서버 활동을 다시 허용합니다."));
                     
                     if (!(sender instanceof LocalPlayer)) {
-                        sender.print("ALL intensive server activity is now allowed.");
+                        sender.print("부하가 큰 서버 활동을 다시 허용합니다.");
                     }
                 } else {
-                    sender.print("(Silent) ALL intensive server activity is now allowed.");
+                    sender.print("(알림 없이) 부하가 큰 서버 활동을 다시 허용합니다.");
                 }
             }
         }

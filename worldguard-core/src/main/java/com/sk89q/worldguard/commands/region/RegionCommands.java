@@ -103,26 +103,26 @@ public final class RegionCommands extends RegionCommandsBase {
     }
 
     private static TextComponent passthroughFlagWarning = TextComponent.empty()
-            .append(TextComponent.of("WARNING:", TextColor.RED, Sets.newHashSet(TextDecoration.BOLD)))
-            .append(ErrorFormat.wrap(" This flag is unrelated to moving through regions."))
+            .append(TextComponent.of("경고:", TextColor.RED, Sets.newHashSet(TextDecoration.BOLD)))
+            .append(ErrorFormat.wrap(" 이 플래그는 영역을 통과하는 이동과 관계없습니다."))
             .append(TextComponent.newline())
-            .append(TextComponent.of("It overrides build checks. If you're unsure what this means, see ")
-                    .append(TextComponent.of("[this documentation page]", TextColor.AQUA)
+            .append(TextComponent.of("건축 판정을 덮어씁니다. 자세한 내용은 ")
+                    .append(TextComponent.of("[설명서]", TextColor.AQUA)
                             .clickEvent(ClickEvent.of(ClickEvent.Action.OPEN_URL,
                                     "https://worldguard.enginehub.org/en/latest/regions/flags/#overrides")))
-                    .append(TextComponent.of(" for more info.")));
+                    .append(TextComponent.of("를 확인하세요.")));
     private static TextComponent buildFlagWarning = TextComponent.empty()
-            .append(TextComponent.of("WARNING:", TextColor.RED, Sets.newHashSet(TextDecoration.BOLD)))
-            .append(ErrorFormat.wrap(" Setting this flag is not required for protection."))
+            .append(TextComponent.of("경고:", TextColor.RED, Sets.newHashSet(TextDecoration.BOLD)))
+            .append(ErrorFormat.wrap(" 보호를 위해 이 플래그를 설정할 필요는 없습니다."))
             .append(TextComponent.newline())
-            .append(TextComponent.of("Setting this flag will completely override default protection, and apply" +
-                    " to members, non-members, pistons, sand physics, and everything else that can modify blocks."))
+            .append(TextComponent.of("이 플래그는 기본 보호 판정을 완전히 덮어쓰며," +
+                    " 멤버, 비멤버, 피스톤, 모래 물리 등 모든 블록 변경에 적용됩니다."))
             .append(TextComponent.newline())
-            .append(TextComponent.of("Only set this flag if you are sure you know what you are doing. See ")
-                    .append(TextComponent.of("[this documentation page]", TextColor.AQUA)
+            .append(TextComponent.of("동작을 이해한 경우에만 설정하세요. 참고: ")
+                    .append(TextComponent.of("[설명서]", TextColor.AQUA)
                             .clickEvent(ClickEvent.of(ClickEvent.Action.OPEN_URL,
                                     "https://worldguard.enginehub.org/en/latest/regions/flags/#protection-related")))
-                    .append(TextComponent.of(" for more info.")));
+                    .append(TextComponent.of("를 확인하세요.")));
 
     /**
      * Defines a new region.
@@ -131,10 +131,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"define", "def", "d", "create"},
-             usage = "[-w <world>] <id> [<owner1> [<owner2> [<owners...>]]]",
+    @Command(aliases = {"define", "def", "d", "create", "생성"},
+             usage = "[-w <월드>] <영역> [<소유자1> [<소유자2> [<소유자...>]]]",
              flags = "ngw:",
-             desc = "Defines a region",
+             desc = "영역 생성",
              min = 1)
     public void define(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -162,17 +162,17 @@ public final class RegionCommands extends RegionCommandsBase {
         RegionAdder task = new RegionAdder(manager, region);
         task.addOwnersFromCommand(args, 2);
 
-        final String description = String.format("Adding region '%s'", region.getId());
+        final String description = String.format("영역 '%s' 추가 중", region.getId());
         AsyncCommandBuilder.wrap(task, sender)
                 .registerWithSupervisor(worldGuard.getSupervisor(), description)
                 .onSuccess((Component) null,
                         t -> {
-                            sender.print(String.format("A new region has been made named '%s'.", region.getId()));
+                            sender.print(String.format("새 영역 '%s'을(를) 생성했습니다.", region.getId()));
                             warnAboutDimensions(sender, region);
                             informNewUser(sender, manager, region);
                             checkSpawnOverlap(sender, world, region);
                         })
-                .onFailure(String.format("Failed to add the region '%s'", region.getId()), worldGuard.getExceptionConverter())
+                .onFailure(String.format("영역 '%s'을(를) 추가하지 못했습니다", region.getId()), worldGuard.getExceptionConverter())
                 .buildAndExec(worldGuard.getExecutorService());
     }
 
@@ -183,9 +183,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"redefine", "update", "move"},
-             usage = "[-w <world>] <id>",
-             desc = "Re-defines the shape of a region",
+    @Command(aliases = {"redefine", "update", "move", "재설정"},
+             usage = "[-w <월드>] <영역>",
+             desc = "영역 모양 재설정",
              flags = "gw:",
              min = 1, max = 1)
     public void redefine(CommandContext args, Actor sender) throws CommandException {
@@ -215,18 +215,18 @@ public final class RegionCommands extends RegionCommandsBase {
 
         RegionAdder task = new RegionAdder(manager, region);
 
-        final String description = String.format("Updating region '%s'", region.getId());
+        final String description = String.format("영역 '%s' 변경 중", region.getId());
         AsyncCommandBuilder.wrap(task, sender)
                 .registerWithSupervisor(worldGuard.getSupervisor(), description)
-                .sendMessageAfterDelay("(Please wait... " + description + ")")
+                .sendMessageAfterDelay("(잠시 기다려 주세요... " + description + ")")
                 .onSuccess((Component) null,
                         t -> {
-                            sender.print(String.format("Region '%s' has been updated with a new area.", region.getId()));
+                            sender.print(String.format("영역 '%s'의 범위를 변경했습니다.", region.getId()));
                             warnAboutDimensions(sender, region);
                             informNewUser(sender, manager, region);
                             checkSpawnOverlap(sender, world, region);
                         })
-                .onFailure(String.format("Failed to update the region '%s'", region.getId()), worldGuard.getExceptionConverter())
+                .onFailure(String.format("영역 '%s'을(를) 변경하지 못했습니다", region.getId()), worldGuard.getExceptionConverter())
                 .buildAndExec(worldGuard.getExecutorService());
     }
 
@@ -240,9 +240,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"claim"},
+    @Command(aliases = {"claim", "점유"},
              usage = "<id>",
-             desc = "Claim a region",
+             desc = "영역 소유권 확보",
              min = 1, max = 1)
     public void claim(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -270,7 +270,7 @@ public final class RegionCommands extends RegionCommandsBase {
             if (maxRegionCount >= 0
                     && manager.getRegionCountOfPlayer(player) >= maxRegionCount) {
                 throw new CommandException(
-                        "You own too many regions, delete one first to claim a new one.");
+                        "영역 수가 너무 많습니다. 기존 영역을 먼저 삭제하세요.");
             }
         }
 
@@ -280,7 +280,7 @@ public final class RegionCommands extends RegionCommandsBase {
         if (existing != null) {
             if (!existing.getOwners().contains(player)) {
                 throw new CommandException(
-                        "This region already exists and you don't own it.");
+                        "이미 존재하는 영역이며 소유자가 아닙니다.");
             }
         }
 
@@ -290,29 +290,29 @@ public final class RegionCommands extends RegionCommandsBase {
         // Check if this region overlaps any other region
         if (regions.size() > 0) {
             if (!regions.isOwnerOfAll(player)) {
-                throw new CommandException("This region overlaps with someone else's region.");
+                throw new CommandException("다른 사용자의 영역과 겹칩니다.");
             }
         } else {
             if (wcfg.claimOnlyInsideExistingRegions) {
-                throw new CommandException("You may only claim regions inside " +
-                        "existing regions that you or your group own.");
+                throw new CommandException("소유권 확보는 다음 영역 안에서만 가능합니다: " +
+                        "자신 또는 소속 그룹이 소유한 기존 영역.");
             }
         }
 
         if (wcfg.maxClaimVolume >= Integer.MAX_VALUE) {
-            throw new CommandException("The maximum claim volume get in the configuration is higher than is supported. " +
-                    "Currently, it must be " + Integer.MAX_VALUE + " or smaller. Please contact a server administrator.");
+            throw new CommandException("설정된 최대 영역 부피가 지원 범위를 초과했습니다. " +
+                    "허용되는 최댓값: " + Integer.MAX_VALUE + " 이하. 서버 관리자에게 문의하세요.");
         }
 
         // Check claim volume
         if (!permModel.mayClaimRegionsUnbounded()) {
             if (region instanceof ProtectedPolygonalRegion) {
-                throw new CommandException("Polygons are currently not supported for /rg claim.");
+                throw new CommandException("/영역 점유는 다각형을 지원하지 않습니다.");
             }
 
             if (region.volume() > wcfg.maxClaimVolume) {
-                player.printError("This region is too large to claim.");
-                player.printError("Max. volume: " + wcfg.maxClaimVolume + ", your volume: " + region.volume());
+                player.printError("영역이 너무 커서 소유권을 확보할 수 없습니다.");
+                player.printError("최대 부피: " + wcfg.maxClaimVolume + ", 선택한 부피: " + region.volume());
                 return;
             }
         }
@@ -331,7 +331,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         region.getOwners().addPlayer(player);
         manager.addRegion(region);
-        player.print(TextComponent.of(String.format("A new region has been claimed named '%s'.", id)));
+        player.print(TextComponent.of(String.format("새 영역 '%s'의 소유권을 확보했습니다.", id)));
     }
 
     /**
@@ -341,9 +341,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"select", "sel", "s"},
-             usage = "[-w <world>] [id]",
-             desc = "Load a region as a WorldEdit selection",
+    @Command(aliases = {"select", "sel", "s", "선택"},
+             usage = "[-w <월드>] [영역]",
+             desc = "영역을 WorldEdit 선택으로 불러오기",
              min = 0, max = 1,
              flags = "w:")
     public void select(CommandContext args, Actor sender) throws CommandException {
@@ -356,7 +356,7 @@ public final class RegionCommands extends RegionCommandsBase {
         if (args.argsLength() == 0) {
             LocalPlayer player = worldGuard.checkPlayer(sender);
             if (!player.getWorld().equals(world)) { // confusing to get current location regions in another world
-                throw new CommandException("Please specify a region name."); // just don't allow that
+                throw new CommandException("영역 이름을 지정하세요."); // just don't allow that
             }
             world = player.getWorld();
             existing = checkRegionStandingIn(manager, player, "/rg select -w \"" + world.getName() + "\" %id%", permissionModel::maySelect);
@@ -380,10 +380,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"info", "i"},
+    @Command(aliases = {"info", "i", "정보"},
              usage = "[id]",
              flags = "usw:",
-             desc = "Get information about a region",
+             desc = "영역 정보 조회",
              min = 0, max = 1)
     public void info(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -397,7 +397,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         if (args.argsLength() == 0) { // Get region from where the player is
             if (!(sender instanceof LocalPlayer)) {
-                throw new CommandException("Please specify the region with /region info -w world_name region_name.");
+                throw new CommandException("/영역 정보 -w 월드이름 영역이름으로 영역을 지정하세요.");
             }
 
             existing = checkRegionStandingIn(manager, (LocalPlayer) sender, true,
@@ -426,13 +426,13 @@ public final class RegionCommands extends RegionCommandsBase {
                 args.hasFlag('u') ? null : WorldGuard.getInstance().getProfileCache(), sender);
 
         AsyncCommandBuilder.wrap(printout, sender)
-                .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "Fetching region info")
-                .sendMessageAfterDelay("(Please wait... fetching region information...)")
+                .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "영역 정보 조회 중")
+                .sendMessageAfterDelay("(잠시 기다려 주세요... 영역 정보 조회 중...)")
                 .onSuccess((Component) null, component -> {
                     sender.print(component);
                     checkSpawnOverlap(sender, world, existing);
                 })
-                .onFailure("Failed to fetch region information", WorldGuard.getInstance().getExceptionConverter())
+                .onFailure("영역 정보를 조회하지 못했습니다", WorldGuard.getInstance().getExceptionConverter())
                 .buildAndExec(WorldGuard.getInstance().getExecutorService());
     }
 
@@ -443,9 +443,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"list"},
-             usage = "[-w world] [-p owner [-n]] [-s] [-i filter] [page]",
-             desc = "Get a list of regions",
+    @Command(aliases = {"list", "목록"},
+             usage = "[-w 월드] [-p 소유자 [-n]] [-s] [-i 필터] [페이지]",
+             desc = "영역 목록 조회",
              flags = "np:w:i:s",
              max = 1)
     public void list(CommandContext args, Actor sender) throws CommandException {
@@ -494,9 +494,9 @@ public final class RegionCommands extends RegionCommandsBase {
         }
 
         AsyncCommandBuilder.wrap(task, sender)
-                .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "Getting region list")
-                .sendMessageAfterDelay("(Please wait... fetching region list...)")
-                .onFailure("Failed to fetch region list", WorldGuard.getInstance().getExceptionConverter())
+                .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "영역 목록 조회 중")
+                .sendMessageAfterDelay("(잠시 기다려 주세요... 영역 목록 조회 중...)")
+                .onFailure("영역 목록을 조회하지 못했습니다", WorldGuard.getInstance().getExceptionConverter())
                 .buildAndExec(WorldGuard.getInstance().getExecutorService());
     }
 
@@ -507,10 +507,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"flag", "f"},
-             usage = "<id> <flag> [-w world] [-g group] [value]",
+    @Command(aliases = {"flag", "f", "플래그"},
+             usage = "<영역> <플래그> [-w 월드] [-g 그룹] [값]",
              flags = "g:w:eh:",
-             desc = "Set flags",
+             desc = "플래그 설정",
              min = 2)
     public void flag(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -524,7 +524,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         if (args.hasFlag('e')) {
             if (value != null) {
-                throw new CommandException("You cannot use -e(mpty) with a flag value.");
+                throw new CommandException("-e(빈 값) 옵션과 플래그 값을 함께 사용할 수 없습니다.");
             }
 
             value = "";
@@ -547,7 +547,7 @@ public final class RegionCommands extends RegionCommandsBase {
         if (foundFlag == null) {
             AsyncCommandBuilder.wrap(new FlagListBuilder(flagRegistry, permModel, existing, world,
                                                          regionId, sender, flagName), sender)
-                    .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "Flag list for invalid flag command.")
+                    .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), "유효하지 않은 플래그 명령어의 플래그 목록.")
                     .onSuccess((Component) null, sender::print)
                     .onFailure((Component) null, WorldGuard.getInstance().getExceptionConverter())
                     .buildAndExec(WorldGuard.getInstance().getExecutorService());
@@ -579,8 +579,8 @@ public final class RegionCommands extends RegionCommandsBase {
             RegionGroupFlag groupFlag = foundFlag.getRegionGroupFlag();
 
             if (groupFlag == null) {
-                throw new CommandException("Region flag '" + foundFlag.getName()
-                        + "' does not have a group flag!");
+                throw new CommandException("영역 플래그 '" + foundFlag.getName()
+                        + "'에는 그룹 플래그가 없습니다!");
             }
 
             // Parse the [-g group] separately so entire command can abort if parsing
@@ -606,7 +606,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         if (value != null) {
             if (!args.hasFlag('h')) {
-                sender.print("Region flag " + foundFlag.getName() + " set on '" + regionId + "' to '" + value + "'.");
+                sender.print("영역 플래그 " + foundFlag.getName() + " 설정 대상: '" + regionId + "' 설정값: '" + value + "'.");
             }
 
         // No value? Clear the flag, if -g isn't specified
@@ -621,7 +621,7 @@ public final class RegionCommands extends RegionCommandsBase {
             }
 
             if (!args.hasFlag('h')) {
-                sender.print("Region flag " + foundFlag.getName() + " removed from '" + regionId + "'. (Any -g(roups) were also removed.)");
+                sender.print("영역 플래그 " + foundFlag.getName() + " 해제 대상: '" + regionId + "'. (연결된 그룹 설정도 해제했습니다.)");
             }
         }
 
@@ -632,10 +632,10 @@ public final class RegionCommands extends RegionCommandsBase {
             // If group set to the default, then clear the group flag
             if (groupValue == groupFlag.getDefault()) {
                 existing.setFlag(groupFlag, null);
-                sender.print("Region group flag for '" + foundFlag.getName() + "' reset to default.");
+                sender.print("영역 그룹 플래그 대상: '" + foundFlag.getName() + "' 기본값으로 초기화했습니다.");
             } else {
                 existing.setFlag(groupFlag, groupValue);
-                sender.print("Region group flag for '" + foundFlag.getName() + "' set.");
+                sender.print("영역 그룹 플래그 대상: '" + foundFlag.getName() + "' 설정했습니다.");
             }
         }
 
@@ -645,7 +645,7 @@ public final class RegionCommands extends RegionCommandsBase {
             sendFlagHelper(sender, world, existing, permModel, page);
         } else {
             RegionPrintoutBuilder printout = new RegionPrintoutBuilder(world.getName(), existing, null, sender);
-            printout.append(SubtleFormat.wrap("(Current flags: "));
+            printout.append(SubtleFormat.wrap("(현재 플래그: "));
             printout.appendFlagsList(false);
             printout.append(SubtleFormat.wrap(")"));
             printout.send(sender);
@@ -653,10 +653,10 @@ public final class RegionCommands extends RegionCommandsBase {
         }
     }
 
-    @Command(aliases = "flags",
-             usage = "[-p <page>] [id]",
+    @Command(aliases = {"flags", "플래그목록"},
+             usage = "[-p <페이지>] [영역]",
              flags = "p:w:",
-             desc = "View region flags",
+             desc = "영역 플래그 조회",
              min = 0, max = 2)
     public void flagHelper(CommandContext args, Actor sender) throws CommandException {
         World world = checkWorld(args, sender, 'w'); // Get the world
@@ -668,7 +668,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         if (args.argsLength() == 0) { // Get region from where the player is
             if (!(sender instanceof LocalPlayer)) {
-                throw new CommandException("Please specify the region with /region flags -w world_name region_name.");
+                throw new CommandException("/영역 플래그목록 -w 월드이름 영역이름으로 영역을 지정하세요.");
             }
 
             region = checkRegionStandingIn(manager, (LocalPlayer) sender, true,
@@ -698,7 +698,7 @@ public final class RegionCommands extends RegionCommandsBase {
                     return flagHelperBox.create(page);
                 }, sender)
                 .onSuccess((Component) null, sender::print)
-                .onFailure("Failed to get region flags", WorldGuard.getInstance().getExceptionConverter())
+                .onFailure("영역 플래그를 조회하지 못했습니다", WorldGuard.getInstance().getExceptionConverter())
                 .buildAndExec(WorldGuard.getInstance().getExecutorService());
     }
 
@@ -709,10 +709,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"setpriority", "priority", "pri"},
-             usage = "<id> <priority>",
+    @Command(aliases = {"setpriority", "priority", "pri", "우선순위"},
+             usage = "<영역> <우선순위>",
              flags = "w:",
-             desc = "Set the priority of a region",
+             desc = "영역 우선순위 설정",
              min = 2, max = 2)
     public void setPriority(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -731,7 +731,7 @@ public final class RegionCommands extends RegionCommandsBase {
 
         existing.setPriority(priority);
 
-        sender.print("Priority of '" + existing.getId() + "' set to " + priority + " (higher numbers override).");
+        sender.print("우선순위 대상: '" + existing.getId() + "' 설정값: " + priority + " (숫자가 클수록 우선합니다).");
         checkSpawnOverlap(sender, world, existing);
     }
 
@@ -742,10 +742,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"setparent", "parent", "par"},
-             usage = "<id> [parent-id]",
+    @Command(aliases = {"setparent", "parent", "par", "부모"},
+             usage = "<영역> [부모영역]",
              flags = "w:",
-             desc = "Set the parent of a region",
+             desc = "영역 부모 설정",
              min = 1, max = 2)
     public void setParent(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -776,9 +776,9 @@ public final class RegionCommands extends RegionCommandsBase {
             // Tell the user what's wrong
             RegionPrintoutBuilder printout = new RegionPrintoutBuilder(world.getName(), parent, null, sender);
             assert parent != null;
-            printout.append(ErrorFormat.wrap("Uh oh! Setting '", parent.getId(), "' to be the parent of '", child.getId(),
-                    "' would cause circular inheritance.")).newline();
-            printout.append(SubtleFormat.wrap("(Current inheritance on '", parent.getId(), "':")).newline();
+            printout.append(ErrorFormat.wrap("설정할 수 없습니다: '", parent.getId(), "'을(를) 다음 영역의 부모로 설정하면 '", child.getId(),
+                    "' 순환 상속이 발생합니다.")).newline();
+            printout.append(SubtleFormat.wrap("(현재 상속 대상: '", parent.getId(), "':")).newline();
             printout.appendParentTree(true);
             printout.append(SubtleFormat.wrap(")"));
             printout.send(sender);
@@ -787,14 +787,14 @@ public final class RegionCommands extends RegionCommandsBase {
 
         // Tell the user the current inheritance
         RegionPrintoutBuilder printout = new RegionPrintoutBuilder(world.getName(), child, null, sender);
-        printout.append(TextComponent.of("Inheritance set for region '" + child.getId() + "'.", TextColor.LIGHT_PURPLE));
+        printout.append(TextComponent.of("상속을 설정한 영역: '" + child.getId() + "'.", TextColor.LIGHT_PURPLE));
         if (parent != null) {
             printout.newline();
-            printout.append(SubtleFormat.wrap("(Current inheritance:")).newline();
+            printout.append(SubtleFormat.wrap("(현재 상속:")).newline();
             printout.appendParentTree(true);
             printout.append(SubtleFormat.wrap(")"));
         } else {
-            printout.append(LabelFormat.wrap(" Region is now orphaned."));
+            printout.append(LabelFormat.wrap(" 부모 영역을 해제했습니다."));
         }
         printout.send(sender);
     }
@@ -806,10 +806,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"remove", "delete", "del", "rem"},
+    @Command(aliases = {"remove", "delete", "del", "rem", "삭제"},
              usage = "<id>",
              flags = "fuw:",
-             desc = "Remove a region",
+             desc = "영역 삭제",
              min = 1, max = 1)
     public void remove(CommandContext args, Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -830,21 +830,21 @@ public final class RegionCommands extends RegionCommandsBase {
         RegionRemover task = new RegionRemover(manager, existing);
 
         if (removeChildren && unsetParent) {
-            throw new CommandException("You cannot use both -u (unset parent) and -f (remove children) together.");
+            throw new CommandException("-u(부모 해제)와 -f(하위 영역 삭제)는 함께 사용할 수 없습니다.");
         } else if (removeChildren) {
             task.setRemovalStrategy(RemovalStrategy.REMOVE_CHILDREN);
         } else if (unsetParent) {
             task.setRemovalStrategy(RemovalStrategy.UNSET_PARENT_IN_CHILDREN);
         }
 
-        final String description = String.format("Removing region '%s' in '%s'", existing.getId(), world.getName());
+        final String description = String.format("영역 '%s' 삭제 중 (월드: '%s')", existing.getId(), world.getName());
         AsyncCommandBuilder.wrap(task, sender)
                 .registerWithSupervisor(WorldGuard.getInstance().getSupervisor(), description)
-                .sendMessageAfterDelay("Please wait... removing region.")
+                .sendMessageAfterDelay("잠시 기다려 주세요... 영역 삭제 중.")
                 .onSuccess((Component) null, removed -> sender.print(TextComponent.of(
-                        "Successfully removed " + removed.stream().map(ProtectedRegion::getId).collect(Collectors.joining(", ")) + ".",
+                        "삭제 완료: " + removed.stream().map(ProtectedRegion::getId).collect(Collectors.joining(", ")) + ".",
                         TextColor.LIGHT_PURPLE)))
-                .onFailure("Failed to remove region", WorldGuard.getInstance().getExceptionConverter())
+                .onFailure("영역을 삭제하지 못했습니다", WorldGuard.getInstance().getExceptionConverter())
                 .buildAndExec(WorldGuard.getInstance().getExecutorService());
     }
 
@@ -855,9 +855,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"load", "reload"},
-            usage = "[world]",
-            desc = "Reload regions from file",
+    @Command(aliases = {"load", "reload", "불러오기"},
+            usage = "[월드]",
+            desc = "파일에서 영역 다시 불러오기",
             flags = "w:")
     public void load(CommandContext args, final Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -878,15 +878,15 @@ public final class RegionCommands extends RegionCommandsBase {
             RegionManager manager = checkRegionManager(world);
 
             if (manager == null) {
-                throw new CommandException("No region manager exists for world '" + world.getName() + "'.");
+                throw new CommandException("영역 관리자가 없는 월드: '" + world.getName() + "'.");
             }
 
-            final String description = String.format("Loading region data for '%s'.", world.getName());
+            final String description = String.format("'%s' 영역 데이터 불러오는 중.", world.getName());
             AsyncCommandBuilder.wrap(new RegionManagerLoader(manager), sender)
                     .registerWithSupervisor(worldGuard.getSupervisor(), description)
-                    .sendMessageAfterDelay("Please wait... " + description)
-                    .onSuccess(String.format("Loaded region data for '%s'", world.getName()), null)
-                    .onFailure(String.format("Failed to load region data for '%s'", world.getName()), worldGuard.getExceptionConverter())
+                    .sendMessageAfterDelay("잠시 기다려 주세요... " + description)
+                    .onSuccess(String.format("'%s' 영역 데이터를 불러왔습니다", world.getName()), null)
+                    .onFailure(String.format("'%s' 영역 데이터를 불러오지 못했습니다", world.getName()), worldGuard.getExceptionConverter())
                     .buildAndExec(worldGuard.getExecutorService());
         } else {
             // Load regions for all worlds
@@ -900,10 +900,10 @@ public final class RegionCommands extends RegionCommandsBase {
             }
 
             AsyncCommandBuilder.wrap(new RegionManagerLoader(managers), sender)
-                    .registerWithSupervisor(worldGuard.getSupervisor(), "Loading regions for all worlds")
-                    .sendMessageAfterDelay("(Please wait... loading region data for all worlds...)")
-                    .onSuccess("Successfully load the region data for all worlds.", null)
-                    .onFailure("Failed to load regions for all worlds", worldGuard.getExceptionConverter())
+                    .registerWithSupervisor(worldGuard.getSupervisor(), "모든 월드의 영역 불러오는 중")
+                    .sendMessageAfterDelay("(잠시 기다려 주세요... 모든 월드의 영역 데이터 불러오는 중...)")
+                    .onSuccess("모든 월드의 영역 데이터를 불러왔습니다.", null)
+                    .onFailure("모든 월드의 영역을 불러오지 못했습니다", worldGuard.getExceptionConverter())
                     .buildAndExec(worldGuard.getExecutorService());
         }
     }
@@ -915,9 +915,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"save", "write"},
-            usage = "[world]",
-            desc = "Re-save regions to file",
+    @Command(aliases = {"save", "write", "저장"},
+            usage = "[월드]",
+            desc = "영역을 파일에 다시 저장",
             flags = "w:")
     public void save(CommandContext args, final Actor sender) throws CommandException {
         warnAboutSaveFailures(sender);
@@ -938,15 +938,15 @@ public final class RegionCommands extends RegionCommandsBase {
             RegionManager manager = checkRegionManager(world);
 
             if (manager == null) {
-                throw new CommandException("No region manager exists for world '" + world.getName() + "'.");
+                throw new CommandException("영역 관리자가 없는 월드: '" + world.getName() + "'.");
             }
 
-            final String description = String.format("Saving region data for '%s'.", world.getName());
+            final String description = String.format("'%s' 영역 데이터 저장 중.", world.getName());
             AsyncCommandBuilder.wrap(new RegionManagerSaver(manager), sender)
                     .registerWithSupervisor(worldGuard.getSupervisor(), description)
-                    .sendMessageAfterDelay("Please wait... " + description)
-                    .onSuccess(String.format("Saving region data for '%s'", world.getName()), null)
-                    .onFailure(String.format("Failed to save region data for '%s'", world.getName()), worldGuard.getExceptionConverter())
+                    .sendMessageAfterDelay("잠시 기다려 주세요... " + description)
+                    .onSuccess(String.format("'%s' 영역 데이터 저장 중", world.getName()), null)
+                    .onFailure(String.format("'%s' 영역 데이터를 저장하지 못했습니다", world.getName()), worldGuard.getExceptionConverter())
                     .buildAndExec(worldGuard.getExecutorService());
         } else {
             // Save for all worlds
@@ -961,10 +961,10 @@ public final class RegionCommands extends RegionCommandsBase {
             }
 
             AsyncCommandBuilder.wrap(new RegionManagerSaver(managers), sender)
-                    .registerWithSupervisor(worldGuard.getSupervisor(), "Saving regions for all worlds")
-                    .sendMessageAfterDelay("(Please wait... saving region data for all worlds...)")
-                    .onSuccess("Successfully saved the region data for all worlds.", null)
-                    .onFailure("Failed to save regions for all worlds", worldGuard.getExceptionConverter())
+                    .registerWithSupervisor(worldGuard.getSupervisor(), "모든 월드의 영역 저장 중")
+                    .sendMessageAfterDelay("(잠시 기다려 주세요... 모든 월드의 영역 데이터 저장 중...)")
+                    .onSuccess("모든 월드의 영역 데이터를 저장했습니다.", null)
+                    .onFailure("모든 월드의 영역을 저장하지 못했습니다", worldGuard.getExceptionConverter())
                     .buildAndExec(worldGuard.getExecutorService());
         }
     }
@@ -976,9 +976,9 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"migratedb"}, usage = "<from> <to>",
+    @Command(aliases = {"migratedb", "저장소이전"}, usage = "<이전저장소> <대상저장소>",
              flags = "y",
-             desc = "Migrate from one Protection Database to another.", min = 2, max = 2)
+             desc = "영역 데이터를 다른 저장소로 이전합니다.", min = 2, max = 2)
     public void migrateDB(CommandContext args, Actor sender) throws CommandException {
         // Check permissions
         if (!getPermissionModel(sender).mayMigrateRegionStore()) {
@@ -989,20 +989,20 @@ public final class RegionCommands extends RegionCommandsBase {
         DriverType to = Enums.findFuzzyByValue(DriverType.class, args.getString(1));
 
         if (from == null) {
-            throw new CommandException("The value of 'from' is not a recognized type of region data database.");
+            throw new CommandException("'from' 값이 유효한 영역 데이터베이스 종류가 아닙니다.");
         }
 
         if (to == null) {
-            throw new CommandException("The value of 'to' is not a recognized type of region region data database.");
+            throw new CommandException("'to' 값이 유효한 영역 데이터베이스 종류가 아닙니다.");
         }
 
         if (from == to) {
-            throw new CommandException("It is not possible to migrate between the same types of region data databases.");
+            throw new CommandException("같은 종류의 영역 데이터베이스 사이에는 이전할 수 없습니다.");
         }
 
         if (!args.hasFlag('y')) {
-            throw new CommandException("This command is potentially dangerous.\n" +
-                    "Please ensure you have made a backup of your data, and then re-enter the command with -y tacked on at the end to proceed.");
+            throw new CommandException("이 명령어는 데이터에 큰 영향을 줄 수 있습니다.\n" +
+                    "데이터를 백업한 뒤 명령어 끝에 -y를 붙여 다시 실행하세요.");
         }
 
         ConfigurationManager config = WorldGuard.getInstance().getPlatform().getGlobalStateManager();
@@ -1010,11 +1010,11 @@ public final class RegionCommands extends RegionCommandsBase {
         RegionDriver toDriver = config.regionStoreDriverMap.get(to);
 
         if (fromDriver == null) {
-            throw new CommandException("The driver specified as 'from' does not seem to be supported in your version of WorldGuard.");
+            throw new CommandException("현재 WorldGuard 버전은 'from' 저장 드라이버를 지원하지 않습니다.");
         }
 
         if (toDriver == null) {
-            throw new CommandException("The driver specified as 'to' does not seem to be supported in your version of WorldGuard.");
+            throw new CommandException("현재 WorldGuard 버전은 'to' 저장 드라이버를 지원하지 않습니다.");
         }
 
         DriverMigration migration = new DriverMigration(fromDriver, toDriver, WorldGuard.getInstance().getFlagRegistry());
@@ -1031,15 +1031,15 @@ public final class RegionCommands extends RegionCommandsBase {
 
         try {
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            sender.print("Now performing migration... this may take a while.");
+            sender.print("데이터 이전 중... 시간이 걸릴 수 있습니다.");
             container.migrate(migration);
             sender.print(
-                    "Migration complete! This only migrated the data. If you already changed your settings to use " +
-                    "the target driver, then WorldGuard is now using the new data. If not, you have to adjust your " +
-                    "configuration to use the new driver and then restart your server.");
+                    "데이터 이전을 완료했습니다! 대상 드라이버를 사용하도록 " +
+                    "설정을 이미 변경했다면 새 데이터를 사용 중입니다. 그렇지 않다면 " +
+                    "새 드라이버를 사용하도록 설정하고 서버를 재시작하세요.");
         } catch (MigrationException e) {
-            log.log(Level.WARNING, "Failed to migrate", e);
-            throw new CommandException("Error encountered while migrating: " + e.getMessage());
+            log.log(Level.WARNING, "이전하지 못했습니다", e);
+            throw new CommandException("이전 중 오류 발생: " + e.getMessage());
         } finally {
             if (minecraftLogger != null) {
                 minecraftLogger.removeHandler(handler);
@@ -1054,8 +1054,8 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"migrateuuid"},
-            desc = "Migrate loaded databases to use UUIDs", max = 0)
+    @Command(aliases = {"migrateuuid", "식별자이전"},
+            desc = "불러온 데이터베이스의 이름을 UUID로 이전", max = 0)
     public void migrateUuid(CommandContext args, Actor sender) throws CommandException {
         // Check permissions
         if (!getPermissionModel(sender).mayMigrateRegionNames()) {
@@ -1078,12 +1078,12 @@ public final class RegionCommands extends RegionCommandsBase {
             RegionDriver driver = container.getDriver();
             UUIDMigration migration = new UUIDMigration(driver, WorldGuard.getInstance().getProfileService(), WorldGuard.getInstance().getFlagRegistry());
             migration.setKeepUnresolvedNames(config.keepUnresolvedNames);
-            sender.print("Now performing migration... this may take a while.");
+            sender.print("데이터 이전 중... 시간이 걸릴 수 있습니다.");
             container.migrate(migration);
-            sender.print("Migration complete!");
+            sender.print("이전을 완료했습니다!");
         } catch (MigrationException e) {
-            log.log(Level.WARNING, "Failed to migrate", e);
-            throw new CommandException("Error encountered while migrating: " + e.getMessage());
+            log.log(Level.WARNING, "이전하지 못했습니다", e);
+            throw new CommandException("이전 중 오류 발생: " + e.getMessage());
         } finally {
             if (minecraftLogger != null) {
                 minecraftLogger.removeHandler(handler);
@@ -1099,10 +1099,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"migrateheights"},
-            usage = "[world]", max = 1,
+    @Command(aliases = {"migrateheights", "높이확장"},
+            usage = "[월드]", max = 1,
             flags = "yw:",
-            desc = "Migrate regions from old height limits to new height limits")
+            desc = "기존 영역 높이를 새 높이 제한으로 확장")
     public void migrateHeights(CommandContext args, Actor sender) throws CommandException {
         // Check permissions
         if (!getPermissionModel(sender).mayMigrateRegionHeights()) {
@@ -1110,8 +1110,8 @@ public final class RegionCommands extends RegionCommandsBase {
         }
 
         if (!args.hasFlag('y')) {
-            throw new CommandException("This command is potentially dangerous.\n" +
-                    "Please ensure you have made a backup of your data, and then re-enter the command with -y tacked on at the end to proceed.");
+            throw new CommandException("이 명령어는 데이터에 큰 영향을 줄 수 있습니다.\n" +
+                    "데이터를 백업한 뒤 명령어 끝에 -y를 붙여 다시 실행하세요.");
         }
 
         World world = null;
@@ -1135,10 +1135,10 @@ public final class RegionCommands extends RegionCommandsBase {
             RegionDriver driver = container.getDriver();
             WorldHeightMigration migration = new WorldHeightMigration(driver, WorldGuard.getInstance().getFlagRegistry(), world);
             container.migrate(migration);
-            sender.print("Migration complete!");
+            sender.print("이전을 완료했습니다!");
         } catch (MigrationException e) {
-            log.log(Level.WARNING, "Failed to migrate", e);
-            throw new CommandException("Error encountered while migrating: " + e.getMessage());
+            log.log(Level.WARNING, "이전하지 못했습니다", e);
+            throw new CommandException("이전 중 오류 발생: " + e.getMessage());
         } finally {
             if (minecraftLogger != null) {
                 minecraftLogger.removeHandler(handler);
@@ -1154,10 +1154,10 @@ public final class RegionCommands extends RegionCommandsBase {
      * @param sender the sender
      * @throws CommandException any error
      */
-    @Command(aliases = {"teleport", "tp"},
-             usage = "[-w world] [-c|s] <id>",
+    @Command(aliases = {"teleport", "tp", "이동"},
+             usage = "[-w 월드] [-c|s] <영역>",
              flags = "csw:",
-             desc = "Teleports you to the location associated with the region.",
+             desc = "영역에 지정된 위치로 순간이동합니다.",
              min = 1, max = 1)
     public void teleport(CommandContext args, Actor sender) throws CommandException {
         LocalPlayer player = worldGuard.checkPlayer(sender);
@@ -1179,7 +1179,7 @@ public final class RegionCommands extends RegionCommandsBase {
             
             if (teleportLocation == null) {
                 throw new CommandException(
-                        "The region has no spawn point associated.");
+                        "영역에 리스폰 위치가 없습니다.");
             }
         } else if (args.hasFlag('c')) {
             // Check permissions
@@ -1188,7 +1188,7 @@ public final class RegionCommands extends RegionCommandsBase {
             }
             Region region = WorldEditRegionConverter.convertToRegion(existing);
             if (region == null || region.getCenter() == null) {
-                throw new CommandException("The region has no center point.");
+                throw new CommandException("영역의 중심 위치가 없습니다.");
             }
             if (player.getGameMode() == GameModes.SPECTATOR) {
                 teleportLocation = new Location(world, region.getCenter(), 0, 0);
@@ -1196,13 +1196,13 @@ public final class RegionCommands extends RegionCommandsBase {
                 // TODO: Add some method to create a safe teleport location.
                 // The method AbstractPlayerActor$findFreePoisition(Location loc) is no good way for this.
                 // It doesn't return the found location and it can't be checked if the location is inside the region.
-                throw new CommandException("Center teleport is only available in Spectator gamemode.");
+                throw new CommandException("중심으로 순간이동하려면 관전자 모드여야 합니다.");
             }
         } else {
             teleportLocation = FlagValueCalculator.getEffectiveFlagOf(existing, Flags.TELE_LOC, player);
             
             if (teleportLocation == null) {
-                throw new CommandException("The region has no teleport point associated.");
+                throw new CommandException("영역에 순간이동 위치가 없습니다.");
             }
         }
 
@@ -1216,12 +1216,12 @@ public final class RegionCommands extends RegionCommandsBase {
 
         player.teleport(teleportLocation,
                 message.replace("%id%", existing.getId()),
-                "Unable to teleport to region '" + existing.getId() + "'.");
+                "순간이동할 수 없는 영역: '" + existing.getId() + "'.");
     }
 
-    @Command(aliases = {"toggle-bypass", "bypass"},
-             usage = "[on|off]",
-             desc = "Toggle region bypassing, effectively ignoring bypass permissions.")
+    @Command(aliases = {"toggle-bypass", "bypass", "우회"},
+             usage = "[켜기|끄기]",
+             desc = "영역 보호 우회 여부 변경")
     public void toggleBypass(CommandContext args, Actor sender) throws CommandException {
         LocalPlayer player = worldGuard.checkPlayer(sender);
         if (!player.hasPermission("worldguard.region.toggle-bypass")) {
@@ -1231,8 +1231,13 @@ public final class RegionCommands extends RegionCommandsBase {
         boolean shouldEnableBypass;
         if (args.argsLength() > 0) {
             String arg1 = args.getString(0);
+            if (arg1.equals("켜기")) {
+                arg1 = "on";
+            } else if (arg1.equals("끄기")) {
+                arg1 = "off";
+            }
             if (!arg1.equalsIgnoreCase("on") && !arg1.equalsIgnoreCase("off")) {
-                throw new CommandException("Allowed optional arguments are: on, off");
+                throw new CommandException("선택 인수는 on(켜기), off(끄기)입니다");
             }
             shouldEnableBypass = arg1.equalsIgnoreCase("on");
         } else {
@@ -1240,10 +1245,10 @@ public final class RegionCommands extends RegionCommandsBase {
         }
         if (shouldEnableBypass) {
             session.setBypassDisabled(false);
-            player.print("You are now bypassing region protection (as long as you have permission).");
+            player.print("영역 보호 우회를 켰습니다. (우회 권한이 있어야 적용됩니다.)");
         } else {
             session.setBypassDisabled(true);
-            player.print("You are no longer bypassing region protection.");
+            player.print("영역 보호 우회를 껐습니다.");
         }
     }
 
@@ -1283,9 +1288,9 @@ public final class RegionCommands extends RegionCommandsBase {
 
             Collections.sort(flagList);
 
-            final TextComponent.Builder builder = TextComponent.builder("Available flags: ");
+            final TextComponent.Builder builder = TextComponent.builder("사용 가능한 플래그: ");
 
-            final HoverEvent clickToSet = HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to set"));
+            final HoverEvent clickToSet = HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("클릭하여 설정"));
             for (int i = 0; i < flagList.size(); i++) {
                 String flag = flagList.get(i);
 
@@ -1297,11 +1302,11 @@ public final class RegionCommands extends RegionCommandsBase {
                 }
             }
 
-            Component ret = ErrorFormat.wrap("Unknown flag specified: " + flagName)
+            Component ret = ErrorFormat.wrap("알 수 없는 플래그: " + flagName)
                     .append(TextComponent.newline())
                     .append(builder.build());
             if (sender.isPlayer()) {
-                return ret.append(TextComponent.of("Or use the command ", TextColor.LIGHT_PURPLE)
+                return ret.append(TextComponent.of("또는 다음 명령어 사용: ", TextColor.LIGHT_PURPLE)
                                 .append(TextComponent.of("/rg flags " + regionId, TextColor.AQUA)
                                     .clickEvent(ClickEvent.of(ClickEvent.Action.RUN_COMMAND,
                                         "/rg flags -w \"" + world.getName() + "\" " + regionId))));

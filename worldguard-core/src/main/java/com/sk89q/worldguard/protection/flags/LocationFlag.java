@@ -73,10 +73,10 @@ public class LocationFlag extends Flag<Location> {
                 if (WorldGuard.getInstance().getPlatform().getGlobalStateManager().get(player.getWorld()).boundedLocationFlags) {
                     if (!rg.contains(loc.toVector().toBlockPoint())) {
                         if (new RegionPermissionModel(player).mayOverrideLocationFlagBounds(rg)) {
-                            player.printDebug("WARNING: Flag location is outside of region.");
+                            player.printDebug("경고: 플래그 위치가 영역 밖입니다.");
                         } else {
                             // no permission
-                            throw new InvalidFlagFormat("You can't set that flag outside of the region boundaries.");
+                            throw new InvalidFlagFormat("영역 경계 밖으로는 이 플래그를 설정할 수 없습니다.");
                         }
                     }
                     // clamp height to world limits
@@ -86,7 +86,7 @@ public class LocationFlag extends Flag<Location> {
             }
             return loc;
         }
-        throw new InvalidFlagFormat("Expected 'here' or x,y,z.");
+        throw new InvalidFlagFormat("'here'(현재 위치) 또는 x,y,z를 입력하세요.");
     }
 
     @Override

@@ -77,11 +77,11 @@ public class BukkitDebugHandler implements DebugHandler {
 
         if (!receiver.equals(target)) {
             if (!isConsole) {
-                log.info(receiver.getName() + " is simulating an event on " + target.getName());
+                log.info(receiver.getName() + " 이벤트 시험 대상: " + target.getName());
             }
 
             target.sendMessage(
-                    ChatColor.RED + "(Please ignore any messages that may immediately follow.)");
+                    ChatColor.RED + "(바로 뒤에 나타나는 메시지는 무시해 주세요.)");
         }
 
         Bukkit.getPluginManager().callEvent(event);
@@ -91,18 +91,18 @@ public class BukkitDebugHandler implements DebugHandler {
         String result = report.toString();
 
         if (stacktraceMode) {
-            receiver.sendMessage(ChatColor.GRAY + "The report was printed to console.");
-            log.info("Event report for " + receiver.getName() + ":\n\n" + result);
+            receiver.sendMessage(ChatColor.GRAY + "보고서를 콘솔에 출력했습니다.");
+            log.info("이벤트 보고서 대상: " + receiver.getName() + ":\n\n" + result);
 
             plugin.checkPermission(receiver, "worldguard.debug.pastebin");
             ActorCallbackPaste.pastebin(WorldGuard.getInstance().getSupervisor(), plugin.wrapCommandSender(receiver),
-                    result, "Event debugging report: %s.txt");
+                    result, "이벤트 디버깅 보고서: %s.txt");
         } else {
             receiver.sendMessage(result.replaceAll("(?m)^", ChatColor.AQUA.toString()));
 
             if (result.length() >= 500 && !isConsole) {
-                receiver.sendMessage(ChatColor.GRAY + "The report was also printed to console.");
-                log.info("Event report for " + receiver.getName() + ":\n\n" + result);
+                receiver.sendMessage(ChatColor.GRAY + "보고서를 콘솔에도 출력했습니다.");
+                log.info("이벤트 보고서 대상: " + receiver.getName() + ":\n\n" + result);
             }
         }
     }
@@ -124,7 +124,7 @@ public class BukkitDebugHandler implements DebugHandler {
                 return (Player) sender;
             } else {
                 throw new CommandException(
-                        "If this command is not to be used in-game, use -t to run the test from the viewpoint of the given player rather than yourself.");
+                        "게임 밖에서 실행할 경우 -t로 시험 대상 플레이어를 지정하세요.");
             }
         }
     }
@@ -151,7 +151,7 @@ public class BukkitDebugHandler implements DebugHandler {
             i++;
         }
 
-        throw new CommandException("Not currently looking at a block that is close enough.");
+        throw new CommandException("충분히 가까운 블록을 바라보고 있지 않습니다.");
     }
 
     /**
@@ -182,7 +182,7 @@ public class BukkitDebugHandler implements DebugHandler {
             i++;
         }
 
-        throw new CommandException("Not currently looking at an entity that is close enough.");
+        throw new CommandException("충분히 가까운 엔티티를 바라보고 있지 않습니다.");
     }
 
     @Override
@@ -191,7 +191,7 @@ public class BukkitDebugHandler implements DebugHandler {
         Player bukkitTarget = BukkitAdapter.adapt(target);
 
         Block block = traceBlock(bukkitSender, bukkitTarget, fromTarget);
-        sender.print(TextComponent.of("Testing BLOCK BREAK at ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
+        sender.print(TextComponent.of("블록 파괴 시험 위치: ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
         LoggingBlockBreakEvent event = new LoggingBlockBreakEvent(block, bukkitTarget);
         testEvent(bukkitSender, bukkitTarget, event, stackTraceMode);
     }
@@ -202,7 +202,7 @@ public class BukkitDebugHandler implements DebugHandler {
         Player bukkitTarget = BukkitAdapter.adapt(target);
 
         Block block = traceBlock(bukkitSender, bukkitTarget, fromTarget);
-        sender.print(TextComponent.of("Testing BLOCK PLACE at ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
+        sender.print(TextComponent.of("블록 설치 시험 위치: ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
         LoggingBlockPlaceEvent event = new LoggingBlockPlaceEvent(block, block.getState(), block.getRelative(BlockFace.DOWN), bukkitTarget.getItemInHand(), bukkitTarget, true);
         testEvent(bukkitSender, bukkitTarget, event, stackTraceMode);
     }
@@ -213,7 +213,7 @@ public class BukkitDebugHandler implements DebugHandler {
         Player bukkitTarget = BukkitAdapter.adapt(target);
 
         Block block = traceBlock(bukkitSender, bukkitTarget, fromTarget);
-        sender.print(TextComponent.of("Testing BLOCK INTERACT at ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
+        sender.print(TextComponent.of("블록 상호작용 시험 위치: ", TextColor.AQUA).append(TextComponent.of(block.toString(), TextColor.DARK_AQUA)));
         LoggingPlayerInteractEvent event = new LoggingPlayerInteractEvent(bukkitTarget, Action.RIGHT_CLICK_BLOCK, bukkitTarget.getItemInHand(), block, BlockFace.SOUTH);
         testEvent(bukkitSender, bukkitTarget, event, stackTraceMode);
     }
@@ -223,7 +223,7 @@ public class BukkitDebugHandler implements DebugHandler {
         CommandSender bukkitSender = plugin.unwrapActor(sender);
         Player bukkitTarget = BukkitAdapter.adapt(target);
         Entity entity = traceEntity(bukkitSender, bukkitTarget, fromTarget);
-        sender.print(TextComponent.of("Testing ENTITY DAMAGE at ", TextColor.AQUA).append(TextComponent.of(entity.toString(), TextColor.DARK_AQUA)));
+        sender.print(TextComponent.of("엔티티 피해 시험 위치: ", TextColor.AQUA).append(TextComponent.of(entity.toString(), TextColor.DARK_AQUA)));
         LoggingEntityDamageByEntityEvent event = new LoggingEntityDamageByEntityEvent(bukkitTarget, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1);
         testEvent(bukkitSender, bukkitTarget, event, stackTraceMode);
     }

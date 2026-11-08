@@ -71,7 +71,7 @@ abstract class AbstractBlacklistEvent implements BlacklistEvent {
     }
 
     protected String getPlayerName() {
-        return player == null ? "(unknown)" : player.getName();
+        return player == null ? "(알 수 없음)" : player.getName();
     }
 
 }

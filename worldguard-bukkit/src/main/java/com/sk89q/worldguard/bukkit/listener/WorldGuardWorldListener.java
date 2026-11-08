@@ -57,7 +57,7 @@ public class WorldGuardWorldListener extends AbstractListener {
             }
 
             if (removed > 50) {
-                log.info("Halt-Act: " + removed + " entities (>50) auto-removed from " + event.getChunk().toString());
+                log.info("활동 중지: " + removed + "개의 엔티티(50개 초과) 자동 제거 위치: " + event.getChunk().toString());
             }
         }
     }

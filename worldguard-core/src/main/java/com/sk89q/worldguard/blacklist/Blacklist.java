@@ -158,14 +158,14 @@ public class Blacklist {
                             builder.add(matcher, entry);
                             currentEntries.add(entry);
                         } catch (TargetMatcherParseException e) {
-                            log.log(Level.WARNING, "Could not parse a block/item heading: " + e.getMessage());
+                            log.log(Level.WARNING, "블록/아이템 머리말을 해석할 수 없습니다: " + e.getMessage());
                         }
                     }
                 } else if (currentEntries != null) {
                     String[] parts = line.split("=");
 
                     if (parts.length == 1) {
-                        log.log(Level.WARNING, "Found option with no value " + file.getName() + " for '" + line + "'");
+                        log.log(Level.WARNING, "값이 없는 옵션: " + file.getName() + " 대상: '" + line + "'");
                         continue;
                     }
 
@@ -202,11 +202,11 @@ public class Blacklist {
                     }
 
                     if (unknownOption) {
-                        log.log(Level.WARNING, "Unknown option '" + parts[0] + "' in " + file.getName() + " for '" + line + "'");
+                        log.log(Level.WARNING, "알 수 없는 옵션: '" + parts[0] + "' 위치: " + file.getName() + " 대상: '" + line + "'");
                     }
                 } else {
-                    log.log(Level.WARNING, "Found option with no heading "
-                            + file.getName() + " for '" + line + "'");
+                    log.log(Level.WARNING, "머리말이 없는 옵션: "
+                            + file.getName() + " 대상: '" + line + "'");
                 }
             }
 
@@ -232,7 +232,7 @@ public class Blacklist {
             }
 
             if (!found) {
-                log.log(Level.WARNING, "Unknown blacklist action: " + name);
+                log.log(Level.WARNING, "알 수 없는 블랙리스트 동작: " + name);
             }
         }
 
