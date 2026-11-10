@@ -244,6 +244,9 @@ public final class Flags {
                     TextColor.RED, Sets.newHashSet(TextDecoration.BOLD)))
                     .append(TextComponent.of(" 이 구역에서 나갈 권한이 없습니다.", TextColor.GRAY)))));
 
+    /** Egoverse: region name shown by Kokonut_HUD's location banner when a player enters the region. */
+    public static final StringFlag KOKONUT_HUD = register(new StringFlag("kokonut-hud"));
+
     private Flags() {
     }
 

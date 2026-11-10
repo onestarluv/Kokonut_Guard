@@ -116,6 +116,7 @@ final class KoreanFlagNames {
                 farewell=퇴장 메시지
                 greeting-title=입장 타이틀
                 farewell-title=퇴장 타이틀
+                kokonut-hud=HUD 지역 이름
                 notify-enter=입장 알림
                 notify-leave=퇴장 알림
                 game-mode=게임 모드
