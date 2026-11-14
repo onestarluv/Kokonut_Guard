@@ -77,4 +77,17 @@ WorldGuard 소스의 명령어 설명·응답·오류, 영역 정보, 보호 안
 기존 설정이나 영역에 직접 저장한 안내 문구는 덮어쓰지 않습니다.
 WorldEdit·서버·다른 플러그인에서 전달된 오류와 사용자 지정 플래그 이름은 원문이 표시될 수 있습니다.
 
-Kokonut-Core 연동과 의존성 제거는 이 변경에 포함하지 않습니다.
+## Kokonut-Core 마을 영토
+
+Kokonut-Core가 켜져 있으면 서버 첫 틱에 `bukkit/kokonut/VillageRegions`가 마을마다 영역 하나를 만듭니다.
+
+- 영역 ID `village-<마을 id>`, 종류 `chunks`(`ProtectedChunkRegion`): 마을 영토 청크 묶음 그대로(가운데가 빈 모양도 가능), 높이는 월드 전체.
+- 소유자 = 마을장, 멤버 = 주민 전원. 그래서 주민이 아니면 영토 안에서 건축·상호작용이 막힙니다(WorldGuard 기본 규칙).
+- 플래그: `kokonut-hud` = 마을 이름(HUD 진입 배너, 이름이 바뀌면 따라감), `build` = 거부 + 그룹 `non_members`(주민만 건축).
+- 영역은 **저장하지 않습니다**(transient). 원본은 Core MySQL이고, 시작할 때와 `VillageChangeEvent`(주민·역할·영토 변경, 다른 서버의 변경 포함)마다 다시 만듭니다. `/영역 불러오기`로 사라져도 1분 안에 복구합니다.
+- 마을 영역에 직접 준 플래그는 다음 재시작까지만 유지됩니다. 모든 마을에 공통으로 줄 플래그는 그 월드에 `village-default` 영역(아무 모양)을 만들어 거기에 설정하세요. 마을 영역의 부모가 됩니다.
+- 영토가 없는 월드(다른 서버)의 마을은 건너뜁니다.
+
+`plugin.yml`에 Kokonut-Core를 `softdepend`로 넣지 마세요. Citizens → WorldGuard → Kokonut-Core → Nexo → ModelEngine → Citizens 로드 순서 순환으로 서버가 켜지지 않습니다.
+
+빌드할 때 `../Kokonut_Core/build/libs/Kokonut-Core-cbt-1.0.jar`를 `compileOnly`로 참조합니다(`-PkokonutCoreJar=`로 변경). 루트의 `buildGuard`는 Core JAR를 먼저 만듭니다.

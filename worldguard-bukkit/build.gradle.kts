@@ -20,6 +20,10 @@ dependencies {
         exclude("junit", "junit")
     }
 
+    // 에고버스: Kokonut-Core village API (VillageRegions); provided by the server at runtime.
+    "compileOnly"(files(providers.gradleProperty("kokonutCoreJar")
+        .orElse(rootProject.file("../Kokonut_Core/build/libs/Kokonut-Core-cbt-1.0.jar").absolutePath)))
+
     "implementation"(libs.paperLib)
     "implementation"(libs.bstats.bukkit)
 }

@@ -27,7 +27,9 @@ public enum RegionType {
     // Do not change the names
     CUBOID("cuboid"),
     POLYGON("poly2d"),
-    GLOBAL("global");
+    GLOBAL("global"),
+    /** 에고버스: whole chunks ({@link ProtectedChunkRegion}), kept in memory only. */
+    CHUNKS("chunks");
 
     private final String name;
 

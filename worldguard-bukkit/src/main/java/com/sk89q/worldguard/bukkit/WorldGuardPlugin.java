@@ -219,6 +219,20 @@ public class WorldGuardPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new WorldGuardCommandBookListener(this), this);
         }
 
+        // 에고버스: one region per Kokonut-Core village territory. No softdepend on Kokonut-Core (it would close a
+        // load-order cycle Citizens -> WorldGuard -> Kokonut-Core -> Nexo -> ModelEngine -> Citizens), so look for it
+        // on the first tick, after every plugin is enabled.
+        Bukkit.getScheduler().runTask(this, () -> {
+            if (!getServer().getPluginManager().isPluginEnabled("Kokonut-Core")) {
+                return;
+            }
+            try {
+                com.sk89q.worldguard.bukkit.kokonut.VillageRegions.start(this);
+            } catch (LinkageError olderCore) {
+                getLogger().warning("Kokonut-Core가 마을 영토를 지원하지 않는 버전이라 마을 영역을 만들지 않습니다.");
+            }
+        });
+
         // handle worlds separately to initialize already loaded worlds
         WorldGuardWorldListener worldListener = (new WorldGuardWorldListener(this));
         for (World world : getServer().getWorlds()) {
