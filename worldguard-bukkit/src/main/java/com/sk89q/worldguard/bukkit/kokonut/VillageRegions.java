@@ -40,8 +40,10 @@ import org.bukkit.event.world.WorldLoadEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -55,16 +57,22 @@ import java.util.logging.Level;
  * go on a region named {@value #DEFAULT_PARENT} in that world (any shape, e.g. a global or tiny cuboid region), which
  * becomes each village region's parent.
  * <p>
+ * A lookup that fails (database down) never removes protection: the region stays as it is and the lookup is retried.
+ * <p>
  * Only load this class after confirming Kokonut-Core is enabled.
  */
 public final class VillageRegions implements Listener {
 
     public static final String PREFIX = "village-";
     public static final String DEFAULT_PARENT = "village-default";
+    private static final long RETRY_TICKS = 20 * 5;
 
     private final WorldGuardPlugin plugin;
     private final VillageService villages;
     private final Map<Long, VillageTerritory> known = new HashMap<>();
+    /** Villages whose lookup failed and is waiting to be retried. */
+    private final Set<Long> retrying = new HashSet<>();
+    private boolean loadFailureLogged;
 
     private VillageRegions(WorldGuardPlugin plugin, VillageService villages) {
         this.plugin = plugin;
@@ -84,27 +92,57 @@ public final class VillageRegions implements Listener {
         }
         VillageRegions sync = new VillageRegions(plugin, villages);
         plugin.getServer().getPluginManager().registerEvents(sync, plugin);
-        villages.territories(all -> {
-            all.forEach(sync::apply);
-            plugin.getLogger().info("Kokonut-Core 마을 영토 " + all.size() + "곳을 영역으로 불러왔습니다.");
-        });
+        sync.loadAll();
         // "/영역 불러오기" replaces the loaded regions with the saved ones, which never include these.
         plugin.getServer().getScheduler().runTaskTimer(plugin, sync::restoreMissing, 20 * 60, 20 * 60);
     }
 
+    /** Until this succeeds no village is protected, so it is retried instead of treated as "no villages". */
+    private void loadAll() {
+        villages.territories(all -> {
+            all.forEach(this::apply);
+            plugin.getLogger().info("Kokonut-Core 마을 영토 " + all.size() + "곳을 영역으로 불러왔습니다.");
+        }, () -> {
+            if (!loadFailureLogged) {
+                loadFailureLogged = true;
+                plugin.getLogger().severe("Kokonut-Core 마을 영토를 불러오지 못했습니다. 불러올 때까지 마을 보호가 적용되지 않으며, "
+                        + (RETRY_TICKS / 20) + "초마다 다시 시도합니다.");
+            }
+            retryLater(this::loadAll);
+        });
+    }
+
     @EventHandler
     public void onVillageChange(VillageChangeEvent event) {
-        long id = event.villageId();
+        refresh(event.villageId());
+    }
+
+    private void refresh(long id) {
         villages.territory(id, territory -> {
+            retrying.remove(id);
             if (territory.isPresent()) {
                 apply(territory.get());
             } else {
+                // Only a completed lookup that found no village gets here.
                 VillageTerritory old = known.remove(id);
                 if (old != null && !old.chunks().isEmpty()) {
                     remove(old.chunks().getFirst().world(), id);
                 }
             }
+        }, () -> {
+            // Keep the current region: an unanswered lookup says nothing about the village.
+            if (retrying.add(id)) {
+                plugin.getLogger().warning("마을 " + id + " 영토 조회에 실패해 기존 보호 영역을 유지합니다. "
+                        + (RETRY_TICKS / 20) + "초마다 다시 시도합니다.");
+            }
+            retryLater(() -> refresh(id));
         });
+    }
+
+    private void retryLater(Runnable task) {
+        if (plugin.isEnabled()) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, task, RETRY_TICKS);
+        }
     }
 
     @EventHandler
